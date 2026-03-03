@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:dicoding_restaurant_app/core/api_client.dart';
-import 'package:dicoding_restaurant_app/core/result_state.dart';
+import 'package:dicoding_restaurant_app/core/base_result_state.dart';
 import 'package:dicoding_restaurant_app/shared/model/restaurant.dart';
 
 class RestaurantListProvider extends ChangeNotifier {
@@ -11,15 +11,26 @@ class RestaurantListProvider extends ChangeNotifier {
     getAllRestaurants();
   }
 
-  ResultState<List<Restaurant>> _state = ResultStateInitial();
-  ResultState<List<Restaurant>> get state => _state;
+  BaseResultState<List<Restaurant>> _state = BaseResultStateInitial();
+  BaseResultState<List<Restaurant>> get state => _state;
 
   Future<void> getAllRestaurants() async {
-    _state = ResultStateLoading();
+    _getRestaurantData('/list');
+  }
+
+  Future<void> searchRestaurants(String query) async {
+    if (query.isEmpty) {
+      return getAllRestaurants();
+    }
+    _getRestaurantData('/search?q=$query');
+  }
+
+  Future<void> _getRestaurantData(String endpoint) async {
+    _state = BaseResultStateLoading();
     notifyListeners();
 
     try {
-      final response = await apiClient.get('/list');
+      final response = await apiClient.get(endpoint);
 
       if (response.statusCode != 200) {
         throw Exception('Failed to load restaurant');
@@ -31,12 +42,12 @@ class RestaurantListProvider extends ChangeNotifier {
       );
 
       if (restaurants.isEmpty) {
-        _state = ResultStateError('No restaurant data');
+        _state = BaseResultStateError('No restaurant data');
       } else {
-        _state = ResultStateSuccess(restaurants);
+        _state = BaseResultStateSuccess(restaurants);
       }
     } catch (e) {
-      _state = ResultStateError('Failed to load restaurant');
+      _state = BaseResultStateError('Failed to load restaurant');
     }
 
     notifyListeners();

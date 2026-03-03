@@ -3,7 +3,7 @@ import 'package:dicoding_restaurant_app/core/config.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:dicoding_restaurant_app/core/result_state.dart';
+import 'package:dicoding_restaurant_app/core/base_result_state.dart';
 import 'package:dicoding_restaurant_app/shared/model/restaurant.dart';
 import 'package:dicoding_restaurant_app/features/home/providers/restaurant_detail/restaurant_detail_provider.dart';
 
@@ -42,11 +42,11 @@ class _HomeDetailScreenState extends State<HomeDetailScreen> {
       body: Consumer<RestaurantDetailProvider>(
         builder: (context, provider, child) {
           return switch (provider.state) {
-            ResultStateLoading() ||
-            ResultStateInitial() => const _DetailLoadingView(),
-            ResultStateError<Restaurant>(errorMessage: final message) =>
+            BaseResultStateLoading() ||
+            BaseResultStateInitial() => const _DetailLoadingView(),
+            BaseResultStateError<Restaurant>(errorMessage: final message) =>
               _DetailErrorView(message: message),
-            ResultStateSuccess<Restaurant>(data: final restaurant) =>
+            BaseResultStateSuccess<Restaurant>(data: final restaurant) =>
               _DetailSuccessView(restaurant: restaurant),
           };
         },
@@ -114,34 +114,64 @@ class _DetailSuccessView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _DetailHeroImage(restaurant: restaurant),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _DetailInfo(restaurant: restaurant),
-                const SizedBox(height: 16),
-                _DetailMenuSection(
-                  title: 'Foods',
-                  items:
-                      restaurant.menus?.foods.map((e) => e.name).toList() ?? [],
-                ),
-                const SizedBox(height: 16),
-                _DetailMenuSection(
-                  title: 'Drinks',
-                  items:
+    return SafeArea(
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _DetailHeroImage(restaurant: restaurant),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 48),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _DetailInfo(restaurant: restaurant),
+                  const SizedBox(height: 16),
+                  _DetailMenuSection(
+                    title: 'Foods',
+                    items:
+                      restaurant.menus?.foods.map((e) => e.name).toList() ??
+                      [],
+                  ),
+                  const SizedBox(height: 16),
+                  _DetailMenuSection(
+                    title: 'Drinks',
+                    items:
                       restaurant.menus?.drinks.map((e) => e.name).toList() ??
                       [],
-                ),
-              ],
+                  ),
+                  const SizedBox(height: 24),
+                  const Text(
+                    'Reviews',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  ),
+                  const SizedBox(height: 8),
+                  if (restaurant.customerReviews != null)
+                    ListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: restaurant.customerReviews!.length,
+                      itemBuilder: (context, index) {
+                        final review = restaurant.customerReviews![index];
+                        return ListTile(
+                          contentPadding: EdgeInsets.zero,
+                          leading: const CircleAvatar(
+                            child: Icon(Icons.person),
+                          ),
+                          title: Text(review.name),
+                          subtitle: Text(review.review),
+                          trailing: Text(
+                            review.date,
+                            style: const TextStyle(fontSize: 10),
+                          ),
+                        );
+                      },
+                    ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

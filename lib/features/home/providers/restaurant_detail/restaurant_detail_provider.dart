@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:dicoding_restaurant_app/core/api_client.dart';
-import 'package:dicoding_restaurant_app/core/result_state.dart';
+import 'package:dicoding_restaurant_app/core/base_result_state.dart';
 import 'package:dicoding_restaurant_app/shared/model/restaurant.dart';
 
 class RestaurantDetailProvider extends ChangeNotifier {
@@ -9,11 +9,11 @@ class RestaurantDetailProvider extends ChangeNotifier {
 
   RestaurantDetailProvider({required this.apiClient});
 
-  ResultState<Restaurant> _state = ResultStateInitial();
-  ResultState<Restaurant> get state => _state;
+  BaseResultState<Restaurant> _state = BaseResultStateInitial();
+  BaseResultState<Restaurant> get state => _state;
 
   Future<void> getRestaurantById(String id) async {
-    _state = ResultStateLoading();
+    _state = BaseResultStateLoading();
     notifyListeners();
 
     try {
@@ -25,9 +25,9 @@ class RestaurantDetailProvider extends ChangeNotifier {
 
       final result = jsonDecode(response.body);
       final restaurant = Restaurant.fromJson(result['restaurant']);
-      _state = ResultStateSuccess(restaurant);
+      _state = BaseResultStateSuccess(restaurant);
     } catch (e) {
-      _state = ResultStateError('Failed to load restaurant');
+      _state = BaseResultStateError('Failed to load restaurant');
     }
 
     notifyListeners();

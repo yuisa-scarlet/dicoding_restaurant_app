@@ -1,7 +1,8 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:dicoding_restaurant_app/core/result_state.dart';
+import 'package:dicoding_restaurant_app/core/base_result_state.dart';
 import 'package:dicoding_restaurant_app/shared/model/restaurant.dart';
 import 'package:dicoding_restaurant_app/features/home/providers/restaurant_list/restaurant_list_provider.dart';
 import 'package:dicoding_restaurant_app/features/home/widgets/restaurant_card.dart';
@@ -42,6 +43,9 @@ class _HomeBody extends StatefulWidget {
 }
 
 class _HomeBodyState extends State<_HomeBody> {
+  final TextEditingController _searchController = TextEditingController();
+  Timer? _debounce;
+
   @override
   void initState() {
     super.initState();
@@ -53,20 +57,62 @@ class _HomeBodyState extends State<_HomeBody> {
   }
 
   @override
+  void dispose() {
+    _debounce?.cancel();
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  void _onSearchChanged(String query) {
+    if (_debounce?.isActive ?? false) _debounce!.cancel();
+    _debounce = Timer(const Duration(milliseconds: 500), () {
+      if (mounted) {
+        context.read<RestaurantListProvider>().searchRestaurants(query);
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Restaurant List')),
+      appBar: AppBar(
+        title: TextField(
+          controller: _searchController,
+          decoration: InputDecoration(
+            hintText: 'Search restaurant...',
+            prefixIcon: const Icon(Icons.search),
+            suffixIcon: IconButton(
+              icon: const Icon(Icons.clear),
+              onPressed: () {
+                _searchController.clear();
+                _onSearchChanged('');
+                FocusScope.of(context).unfocus();
+              },
+            ),
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(30)),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 8,
+            ),
+            filled: true,
+            fillColor: Theme.of(context).colorScheme.surface,
+          ),
+          onChanged: _onSearchChanged,
+        ),
+      ),
       body: Consumer<RestaurantListProvider>(
         builder: (context, provider, child) {
           return switch (provider.state) {
-            ResultStateLoading() ||
-            ResultStateInitial() => const _HomeLoadingView(),
-            ResultStateError<List<Restaurant>>(errorMessage: final message) =>
+            BaseResultStateLoading() ||
+            BaseResultStateInitial() => const _HomeLoadingView(),
+            BaseResultStateError<List<Restaurant>>(
+              errorMessage: final message,
+            ) =>
               _HomeErrorView(
                 message: message,
                 onRetry: provider.getAllRestaurants,
               ),
-            ResultStateSuccess<List<Restaurant>>(data: final restaurants) =>
+            BaseResultStateSuccess<List<Restaurant>>(data: final restaurants) =>
               _HomeSuccessView(restaurants: restaurants),
           };
         },
