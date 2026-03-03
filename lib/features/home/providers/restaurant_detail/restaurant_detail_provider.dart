@@ -40,35 +40,28 @@ class RestaurantDetailProvider extends ChangeNotifier {
     if (currentState is! BaseResultStateSuccess<Restaurant>) return;
 
     final restaurantId = currentState.data.id;
+    final response = await apiClient.post(
+      '/review',
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'id': restaurantId, 'name': name, 'review': review}),
+    );
 
-    try {
-      final response = await apiClient.post(
-        '/review',
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({'id': restaurantId, 'name': name, 'review': review}),
-      );
-
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        final result = jsonDecode(response.body);
-        if (result['error'] == false) {
-          final newReviews = List<CustomerReview>.from(
-            result['customerReviews'].map((x) => CustomerReview.fromJson(x)),
-          );
-
-          final updatedRestaurant = currentState.data.copyWith(
-            customerReviews: newReviews,
-          );
-
-          _state = BaseResultStateSuccess(updatedRestaurant);
-          notifyListeners();
-        } else {
-          throw Exception(result['message'] ?? 'Failed to add review');
-        }
-      } else {
-        throw Exception('Failed to add review');
-      }
-    } catch (e) {
-      rethrow;
+    if (response.statusCode != 200 && response.statusCode != 201) {
+      throw Exception('Failed to add review');
     }
+
+    final result = jsonDecode(response.body);
+    if (result['error'] == true) {
+      throw Exception(result['message'] ?? 'Failed to add review');
+    }
+
+    final newReviews = List<CustomerReview>.from(
+      result['customerReviews'].map((x) => CustomerReview.fromJson(x)),
+    );
+
+    _state = BaseResultStateSuccess(
+      currentState.data.copyWith(customerReviews: newReviews),
+    );
+    notifyListeners();
   }
 }

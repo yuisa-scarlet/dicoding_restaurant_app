@@ -23,7 +23,6 @@ class _SettingScreenState extends State<SettingScreen> {
           return ListView(
             padding: const EdgeInsets.all(16),
             children: [
-              // Section label
               const Padding(
                 padding: EdgeInsets.only(left: 4, bottom: 8),
                 child: Text(
