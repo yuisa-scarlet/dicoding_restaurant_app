@@ -94,7 +94,11 @@ class ApiClient {
     return await _client.get(Uri.parse(path));
   }
 
-  Future<http.Response> post(String path, {Object? body}) async {
-    return await _client.post(Uri.parse(path), body: body);
+  Future<http.Response> post(
+    String path, {
+    Object? body,
+    Map<String, String>? headers,
+  }) async {
+    return await _client.post(Uri.parse(path), body: body, headers: headers);
   }
 }
