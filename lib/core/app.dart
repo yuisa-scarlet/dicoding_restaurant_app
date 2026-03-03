@@ -14,47 +14,60 @@ class App extends StatelessWidget {
   const App({super.key});
 
   ThemeData _buildTheme(Brightness brightness) {
+    final isDark = brightness == Brightness.dark;
+
+    final appBarColor = isDark ? AppColor.selected : Colors.white;
+    final appBarForeground = isDark ? Colors.white : AppColor.primary;
+    final bottomNavBg = isDark ? const Color(0xFF1E1E1E) : Colors.white;
+    final statusBarIconBrightness = isDark ? Brightness.light : Brightness.dark;
+
     final base = ColorScheme.fromSeed(
-      seedColor: AppColor.primary,
-      primary: AppColor.primary,
+      seedColor: AppColor.selected,
+      primary: isDark ? AppColor.selected : AppColor.primary,
       secondary: AppColor.selected,
       brightness: brightness,
+      surface: isDark ? const Color(0xFF1E1E1E) : Colors.white,
     );
 
     return ThemeData(
       useMaterial3: true,
       colorScheme: base,
+      scaffoldBackgroundColor: isDark ? const Color(0xFF121212) : Colors.white,
       fontFamily: 'PlusJakartaSans',
       appBarTheme: AppBarTheme(
-        backgroundColor: AppColor.primary,
-        foregroundColor: Colors.white,
-        iconTheme: const IconThemeData(color: Colors.white),
-        actionsIconTheme: const IconThemeData(color: Colors.white),
-        titleTextStyle: const TextStyle(
-          color: Colors.white,
+        backgroundColor: appBarColor,
+        foregroundColor: appBarForeground,
+        elevation: isDark ? 0 : 0.5,
+        shadowColor: Colors.black26,
+        iconTheme: IconThemeData(color: appBarForeground),
+        actionsIconTheme: IconThemeData(color: appBarForeground),
+        titleTextStyle: TextStyle(
+          color: appBarForeground,
           fontSize: 18,
           fontWeight: FontWeight.bold,
           fontFamily: 'PlusJakartaSans',
         ),
-        systemOverlayStyle: const SystemUiOverlayStyle(
-          statusBarColor: AppColor.primary,
-          statusBarIconBrightness: Brightness.light,
-          statusBarBrightness: Brightness.dark,
+        systemOverlayStyle: SystemUiOverlayStyle(
+          statusBarColor: appBarColor,
+          statusBarIconBrightness: statusBarIconBrightness,
+          statusBarBrightness: isDark ? Brightness.dark : Brightness.light,
         ),
       ),
-      bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-        backgroundColor: AppColor.primary,
-        selectedItemColor: AppColor.selected,
-        unselectedItemColor: Colors.white70,
-        selectedLabelStyle: TextStyle(
-          color: AppColor.selected,
-          fontWeight: FontWeight.bold,
-        ),
-        unselectedLabelStyle: TextStyle(color: Colors.white70),
+      bottomNavigationBarTheme: BottomNavigationBarThemeData(
+        backgroundColor: bottomNavBg,
+        selectedItemColor: isDark ? Colors.white : AppColor.selected,
+        unselectedItemColor: isDark ? Colors.white60 : Colors.grey,
+        selectedLabelStyle: const TextStyle(fontWeight: FontWeight.bold),
+        unselectedLabelStyle: const TextStyle(),
+      ),
+      cardTheme: CardThemeData(
+        color: isDark ? const Color(0xFF2A2A2A) : Colors.white,
+        elevation: isDark ? 0 : 1,
+        surfaceTintColor: Colors.transparent,
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          backgroundColor: AppColor.primary,
+          backgroundColor: AppColor.selected,
           foregroundColor: Colors.white,
         ),
       ),
