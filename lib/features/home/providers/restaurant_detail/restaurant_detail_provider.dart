@@ -1,9 +1,9 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:dicoding_restaurant_app/core/api_client.dart';
 import 'package:dicoding_restaurant_app/core/base_result_state.dart';
 import 'package:dicoding_restaurant_app/shared/model/restaurant.dart';
-
 import 'package:dicoding_restaurant_app/shared/model/customer_review.dart';
 
 class RestaurantDetailProvider extends ChangeNotifier {
@@ -22,14 +22,20 @@ class RestaurantDetailProvider extends ChangeNotifier {
       final response = await apiClient.get('/detail/$id');
 
       if (response.statusCode != 200) {
-        throw Exception('Failed to load restaurant');
+        throw Exception();
       }
 
       final result = jsonDecode(response.body);
       final restaurant = Restaurant.fromJson(result['restaurant']);
       _state = BaseResultStateSuccess(restaurant);
+    } on SocketException {
+      _state = BaseResultStateError(
+        'Tidak dapat terhubung ke server. Periksa koneksi internet Anda.',
+      );
     } catch (e) {
-      _state = BaseResultStateError('Failed to load restaurant');
+      _state = BaseResultStateError(
+        'Terjadi kesalahan saat memuat detail restoran. Silakan coba lagi.',
+      );
     }
 
     notifyListeners();
@@ -47,12 +53,16 @@ class RestaurantDetailProvider extends ChangeNotifier {
     );
 
     if (response.statusCode != 200 && response.statusCode != 201) {
-      throw Exception('Failed to add review');
+      throw Exception(
+        'Gagal mengirim ulasan. Silakan coba beberapa saat lagi.',
+      );
     }
 
     final result = jsonDecode(response.body);
     if (result['error'] == true) {
-      throw Exception(result['message'] ?? 'Failed to add review');
+      throw Exception(
+        result['message'] ?? 'Gagal mengirim ulasan. Silakan coba lagi.',
+      );
     }
 
     final newReviews = List<CustomerReview>.from(

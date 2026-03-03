@@ -59,9 +59,9 @@ class _AddReviewSheetContentState extends State<_AddReviewSheetContent> {
       }
     } catch (e) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(e.toString().replaceAll('Exception: ', ''))),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(e.toString())));
         reviewProvider.setLoading(false);
       }
     }
@@ -110,7 +110,6 @@ class _AddReviewSheetContentState extends State<_AddReviewSheetContent> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // Handle bar
             Center(
               child: Container(
                 width: 40,
