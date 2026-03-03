@@ -41,180 +41,25 @@ class _HomeDetailScreenState extends State<HomeDetailScreen> {
       appBar: AppBar(title: const Text('Restaurant Detail')),
       body: Consumer<RestaurantDetailProvider>(
         builder: (context, provider, child) {
-          final state = provider.state;
-
-          if (state is ResultStateLoading || state is ResultStateInitial) {
-            return _buildShimmerLoading();
-          } else if (state is ResultStateError<Restaurant>) {
-            return Center(
-              child: Text(
-                state.errorMessage,
-                style: const TextStyle(color: Colors.red),
-              ),
-            );
-          } else if (state is ResultStateSuccess<Restaurant>) {
-            final restaurant = state.data;
-            return SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Hero(
-                    tag: restaurant.pictureId,
-                    child: CachedNetworkImage(
-                      imageUrl:
-                          '${Config.baseUrl}/images/medium/${restaurant.pictureId}',
-                      width: double.infinity,
-                      height: 250,
-                      fit: BoxFit.cover,
-                      fadeInDuration: const Duration(milliseconds: 350),
-                      placeholder: (context, url) => Shimmer.fromColors(
-                        baseColor: Colors.grey[300]!,
-                        highlightColor: Colors.grey[100]!,
-                        child: Container(
-                          width: double.infinity,
-                          height: 250,
-                          color: Colors.white,
-                        ),
-                      ),
-                      errorWidget: (context, url, error) => const SizedBox(
-                        height: 250,
-                        child: Center(child: Icon(Icons.error)),
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          restaurant.name,
-                          style: Theme.of(context).textTheme.headlineSmall
-                              ?.copyWith(fontWeight: FontWeight.bold),
-                        ),
-                        const SizedBox(height: 8),
-                        Row(
-                          children: [
-                            const Icon(Icons.location_on, color: Colors.grey),
-                            const SizedBox(width: 8),
-                            Text(
-                              '${restaurant.city}, ${restaurant.address ?? ""}',
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 8),
-                        Row(
-                          children: [
-                            const Icon(Icons.star, color: Colors.amber),
-                            const SizedBox(width: 8),
-                            Text(restaurant.rating.toString()),
-                          ],
-                        ),
-                        const SizedBox(height: 16),
-                        const Text(
-                          'Description',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(restaurant.description),
-                        const SizedBox(height: 16),
-                        const Text(
-                          'Foods',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        SizedBox(
-                          height: 40,
-                          child: ListView.builder(
-                            scrollDirection: Axis.horizontal,
-                            itemCount: restaurant.menus?.foods.length ?? 0,
-                            itemBuilder: (context, index) {
-                              return Padding(
-                                padding: const EdgeInsets.only(right: 8.0),
-                                child: Chip(
-                                  label: Text(
-                                    restaurant.menus!.foods[index].name,
-                                  ),
-                                ),
-                              );
-                            },
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-                        const Text(
-                          'Drinks',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        SizedBox(
-                          height: 40,
-                          child: ListView.builder(
-                            scrollDirection: Axis.horizontal,
-                            itemCount: restaurant.menus?.drinks.length ?? 0,
-                            itemBuilder: (context, index) {
-                              return Padding(
-                                padding: const EdgeInsets.only(right: 8.0),
-                                child: Chip(
-                                  label: Text(
-                                    restaurant.menus!.drinks[index].name,
-                                  ),
-                                ),
-                              );
-                            },
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-                        const Text(
-                          'Reviews',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        ListView.builder(
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemCount: restaurant.customerReviews?.length ?? 0,
-                          itemBuilder: (context, index) {
-                            final review = restaurant.customerReviews![index];
-                            return ListTile(
-                              leading: const CircleAvatar(
-                                child: Icon(Icons.person),
-                              ),
-                              title: Text(review.name),
-                              subtitle: Text(review.review),
-                              trailing: Text(
-                                review.date,
-                                style: const TextStyle(fontSize: 10),
-                              ),
-                            );
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            );
-          } else {
-            return const SizedBox.shrink();
-          }
+          return switch (provider.state) {
+            ResultStateLoading() ||
+            ResultStateInitial() => const _DetailLoadingView(),
+            ResultStateError<Restaurant>(errorMessage: final message) =>
+              _DetailErrorView(message: message),
+            ResultStateSuccess<Restaurant>(data: final restaurant) =>
+              _DetailSuccessView(restaurant: restaurant),
+          };
         },
       ),
     );
   }
+}
 
-  Widget _buildShimmerLoading() {
+class _DetailLoadingView extends StatelessWidget {
+  const _DetailLoadingView();
+
+  @override
+  Widget build(BuildContext context) {
     return Shimmer.fromColors(
       baseColor: Colors.grey[300]!,
       highlightColor: Colors.grey[100]!,
@@ -245,6 +90,166 @@ class _HomeDetailScreenState extends State<HomeDetailScreen> {
           ),
         ],
       ),
+    );
+  }
+}
+
+class _DetailErrorView extends StatelessWidget {
+  final String message;
+
+  const _DetailErrorView({required this.message});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Text(message, style: const TextStyle(color: Colors.red)),
+    );
+  }
+}
+
+class _DetailSuccessView extends StatelessWidget {
+  final Restaurant restaurant;
+
+  const _DetailSuccessView({required this.restaurant});
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _DetailHeroImage(restaurant: restaurant),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _DetailInfo(restaurant: restaurant),
+                const SizedBox(height: 16),
+                _DetailMenuSection(
+                  title: 'Foods',
+                  items:
+                      restaurant.menus?.foods.map((e) => e.name).toList() ?? [],
+                ),
+                const SizedBox(height: 16),
+                _DetailMenuSection(
+                  title: 'Drinks',
+                  items:
+                      restaurant.menus?.drinks.map((e) => e.name).toList() ??
+                      [],
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _DetailHeroImage extends StatelessWidget {
+  final Restaurant restaurant;
+
+  const _DetailHeroImage({required this.restaurant});
+
+  @override
+  Widget build(BuildContext context) {
+    return Hero(
+      tag: restaurant.pictureId,
+      child: CachedNetworkImage(
+        imageUrl: '${Config.baseUrl}/images/medium/${restaurant.pictureId}',
+        width: double.infinity,
+        height: 250,
+        fit: BoxFit.cover,
+        fadeInDuration: const Duration(milliseconds: 350),
+        placeholder: (context, url) => Shimmer.fromColors(
+          baseColor: Colors.grey[300]!,
+          highlightColor: Colors.grey[100]!,
+          child: Container(
+            width: double.infinity,
+            height: 250,
+            color: Colors.white,
+          ),
+        ),
+        errorWidget: (context, url, error) => const SizedBox(
+          height: 250,
+          child: Center(child: Icon(Icons.error)),
+        ),
+      ),
+    );
+  }
+}
+
+class _DetailInfo extends StatelessWidget {
+  final Restaurant restaurant;
+
+  const _DetailInfo({required this.restaurant});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          restaurant.name,
+          style: Theme.of(
+            context,
+          ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 8),
+        Row(
+          children: [
+            const Icon(Icons.location_on, color: Colors.grey),
+            const SizedBox(width: 8),
+            Text('${restaurant.city}, ${restaurant.address ?? ""}'),
+          ],
+        ),
+        const SizedBox(height: 8),
+        Row(
+          children: [
+            const Icon(Icons.star, color: Colors.amber),
+            const SizedBox(width: 8),
+            Text(restaurant.rating.toString()),
+          ],
+        ),
+        const SizedBox(height: 16),
+        const Text(
+          'Description',
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+        ),
+        const SizedBox(height: 8),
+        Text(restaurant.description),
+      ],
+    );
+  }
+}
+
+class _DetailMenuSection extends StatelessWidget {
+  final String title;
+  final List<String> items;
+
+  const _DetailMenuSection({required this.title, required this.items});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+        ),
+        const SizedBox(height: 8),
+        SizedBox(
+          height: 40,
+          child: ListView.separated(
+            scrollDirection: Axis.horizontal,
+            itemCount: items.length,
+            separatorBuilder: (_, __) => const SizedBox(width: 8),
+            itemBuilder: (context, index) => Chip(label: Text(items[index])),
+          ),
+        ),
+      ],
     );
   }
 }

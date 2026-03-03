@@ -58,70 +58,91 @@ class _HomeBodyState extends State<_HomeBody> {
       appBar: AppBar(title: const Text('Restaurant List')),
       body: Consumer<RestaurantListProvider>(
         builder: (context, provider, child) {
-          final state = provider.state;
-
-          if (state is ResultStateLoading || state is ResultStateInitial) {
-            return ListView.builder(
-              itemCount: 6,
-              itemBuilder: (context, index) {
-                return Shimmer.fromColors(
-                  baseColor: Colors.grey[300]!,
-                  highlightColor: Colors.grey[100]!,
-                  child: Card(
-                    margin: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 8,
-                    ),
-                    child: Container(
-                      height: 100,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                  ),
-                );
-              },
-            );
-          } else if (state is ResultStateError<List<Restaurant>>) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Icon(Icons.error_outline, size: 48, color: Colors.red),
-                  const SizedBox(height: 16),
-                  Text(state.errorMessage, textAlign: TextAlign.center),
-                  const SizedBox(height: 16),
-                  ElevatedButton(
-                    onPressed: () => provider.getAllRestaurants(),
-                    child: const Text('Retry'),
-                  ),
-                ],
+          return switch (provider.state) {
+            ResultStateLoading() ||
+            ResultStateInitial() => const _HomeLoadingView(),
+            ResultStateError<List<Restaurant>>(errorMessage: final message) =>
+              _HomeErrorView(
+                message: message,
+                onRetry: provider.getAllRestaurants,
               ),
-            );
-          } else if (state is ResultStateSuccess<List<Restaurant>>) {
-            final restaurants = state.data;
-            return ListView.builder(
-              itemCount: restaurants.length,
-              itemBuilder: (context, index) {
-                final restaurant = restaurants[index];
-                return RestaurantCard(
-                  restaurant: restaurant,
-                  onTap: () {
-                    Navigator.pushNamed(
-                      context,
-                      '/home/detail',
-                      arguments: restaurant.id,
-                    );
-                  },
-                );
-              },
-            );
-          } else {
-            return const SizedBox.shrink();
-          }
+            ResultStateSuccess<List<Restaurant>>(data: final restaurants) =>
+              _HomeSuccessView(restaurants: restaurants),
+          };
         },
       ),
+    );
+  }
+}
+
+class _HomeLoadingView extends StatelessWidget {
+  const _HomeLoadingView();
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      itemCount: 6,
+      itemBuilder: (context, index) => Shimmer.fromColors(
+        baseColor: Colors.grey[300]!,
+        highlightColor: Colors.grey[100]!,
+        child: Card(
+          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          child: Container(
+            height: 100,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _HomeErrorView extends StatelessWidget {
+  final String message;
+  final VoidCallback onRetry;
+
+  const _HomeErrorView({required this.message, required this.onRetry});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Icon(Icons.error_outline, size: 48, color: Colors.red),
+          const SizedBox(height: 16),
+          Text(message, textAlign: TextAlign.center),
+          const SizedBox(height: 16),
+          ElevatedButton(onPressed: onRetry, child: const Text('Retry')),
+        ],
+      ),
+    );
+  }
+}
+
+class _HomeSuccessView extends StatelessWidget {
+  final List<Restaurant> restaurants;
+
+  const _HomeSuccessView({required this.restaurants});
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      itemCount: restaurants.length,
+      itemBuilder: (context, index) {
+        final restaurant = restaurants[index];
+        return RestaurantCard(
+          restaurant: restaurant,
+          onTap: () => Navigator.pushNamed(
+            context,
+            '/home/detail',
+            arguments: restaurant.id,
+          ),
+        );
+      },
     );
   }
 }
