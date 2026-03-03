@@ -1,0 +1,98 @@
+import 'dart:developer';
+
+import 'package:http/http.dart' as http;
+
+class ApiInterceptor extends http.BaseClient {
+  final http.Client _inner;
+
+  ApiInterceptor(this._inner);
+
+  @override
+  Future<http.StreamedResponse> send(http.BaseRequest request) async {
+    String head = '----------------------- REQUEST -----------------------';
+    String name = 'Request - ${request.url.path}';
+
+    log(head, name: name);
+    final body = request is http.Request ? request.body : "can't mapped";
+    log(body, name: name);
+
+    final response = await _inner.send(request);
+
+    String responseHead =
+        '----------------------- RESPONSE -----------------------';
+    String responseName = 'Response - ${request.url.path}';
+
+    log(responseHead, name: responseName);
+
+    final responseBody = await response.stream.bytesToString();
+    log(responseBody, name: responseName);
+
+    return http.StreamedResponse(
+      Stream.value(responseBody.codeUnits),
+      response.statusCode,
+      headers: response.headers,
+      request: request,
+    );
+  }
+}
+
+abstract class BaseApiClient {
+  static http.Client _createClient(String baseUrl) {
+    http.Client client = http.Client();
+
+    return _ConfiguredClient(ApiInterceptor(client), baseUrl);
+  }
+}
+
+class _ConfiguredClient extends http.BaseClient {
+  final http.Client _inner;
+  final String _baseUrl;
+
+  _ConfiguredClient(this._inner, this._baseUrl);
+
+  @override
+  Future<http.StreamedResponse> send(http.BaseRequest request) {
+    request.headers['Accept'] = 'application/json';
+
+    Uri newUrl = request.url;
+    http.BaseRequest newRequest = request;
+
+    if (!newUrl.isAbsolute) {
+      String base = _baseUrl.endsWith('/') ? _baseUrl : '$_baseUrl/';
+      String path = newUrl.toString();
+      if (path.startsWith('/')) {
+        path = path.substring(1);
+      }
+      newUrl = Uri.parse('$base$path');
+
+      if (request is http.Request) {
+        newRequest = http.Request(request.method, newUrl)
+          ..headers.addAll(request.headers)
+          ..bodyBytes = request.bodyBytes
+          ..encoding = request.encoding;
+      } else if (request is http.MultipartRequest) {
+        newRequest = http.MultipartRequest(request.method, newUrl)
+          ..headers.addAll(request.headers)
+          ..fields.addAll(request.fields)
+          ..files.addAll(request.files);
+      }
+    }
+
+    return _inner.send(newRequest);
+  }
+}
+
+class ApiClient {
+  final http.Client _client;
+
+  ApiClient({required String baseUrl})
+    : _client = BaseApiClient._createClient(baseUrl);
+
+  Future<http.Response> get(String path) async {
+    return await _client.get(Uri.parse(path));
+  }
+
+  Future<http.Response> post(String path, {Object? body}) async {
+    return await _client.post(Uri.parse(path), body: body);
+  }
+}

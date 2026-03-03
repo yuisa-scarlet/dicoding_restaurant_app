@@ -1,0 +1,3 @@
+## ARCHITECTURE
+
+State Management: Provider
