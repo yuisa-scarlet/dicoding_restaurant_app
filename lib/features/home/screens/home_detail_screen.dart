@@ -1,3 +1,5 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:dicoding_restaurant_app/core/config.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
@@ -25,7 +27,8 @@ class _HomeDetailScreenState extends State<HomeDetailScreen> {
     if (args != null && _restaurantId == null) {
       _restaurantId = args;
       Future.microtask(() {
-        context.read<RestaurantDetailProvider>().fetchRestaurantDetail(
+        if (!mounted) return;
+        context.read<RestaurantDetailProvider>().getRestaurantById(
           _restaurantId!,
         );
       });
@@ -57,16 +60,26 @@ class _HomeDetailScreenState extends State<HomeDetailScreen> {
                 children: [
                   Hero(
                     tag: restaurant.pictureId,
-                    child: Image.network(
-                      'https://restaurant-api.dicoding.dev/images/medium/${restaurant.pictureId}',
+                    child: CachedNetworkImage(
+                      imageUrl:
+                          '${Config.baseUrl}/images/medium/${restaurant.pictureId}',
                       width: double.infinity,
                       height: 250,
                       fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) =>
-                          const SizedBox(
-                            height: 250,
-                            child: Center(child: Icon(Icons.error)),
-                          ),
+                      fadeInDuration: const Duration(milliseconds: 350),
+                      placeholder: (context, url) => Shimmer.fromColors(
+                        baseColor: Colors.grey[300]!,
+                        highlightColor: Colors.grey[100]!,
+                        child: Container(
+                          width: double.infinity,
+                          height: 250,
+                          color: Colors.white,
+                        ),
+                      ),
+                      errorWidget: (context, url, error) => const SizedBox(
+                        height: 250,
+                        child: Center(child: Icon(Icons.error)),
+                      ),
                     ),
                   ),
                   Padding(

@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
 class ApiInterceptor extends http.BaseClient {
@@ -38,9 +39,10 @@ class ApiInterceptor extends http.BaseClient {
 
 abstract class BaseApiClient {
   static http.Client _createClient(String baseUrl) {
-    http.Client client = http.Client();
+    final http.Client client = http.Client();
+    final http.Client inner = kDebugMode ? client : ApiInterceptor(client);
 
-    return _ConfiguredClient(ApiInterceptor(client), baseUrl);
+    return _ConfiguredClient(inner, baseUrl);
   }
 }
 

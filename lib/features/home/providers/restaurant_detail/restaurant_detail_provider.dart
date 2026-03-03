@@ -12,26 +12,22 @@ class RestaurantDetailProvider extends ChangeNotifier {
   ResultState<Restaurant> _state = ResultStateInitial();
   ResultState<Restaurant> get state => _state;
 
-  Future<void> fetchRestaurantDetail(String id) async {
+  Future<void> getRestaurantById(String id) async {
     _state = ResultStateLoading();
     notifyListeners();
 
     try {
       final response = await apiClient.get('/detail/$id');
-      
-      if (response.statusCode == 200) {
-        final result = jsonDecode(response.body);
-        if (result['error'] == false) {
-          final restaurant = Restaurant.fromJson(result['restaurant']);
-          _state = ResultStateSuccess(restaurant);
-        } else {
-          _state = ResultStateError(result['message'] ?? 'Load failed');
-        }
-      } else {
-        _state = ResultStateError('Server Error: ${response.statusCode}');
+
+      if (response.statusCode != 200) {
+        throw Exception('Failed to load restaurant');
       }
+
+      final result = jsonDecode(response.body);
+      final restaurant = Restaurant.fromJson(result['restaurant']);
+      _state = ResultStateSuccess(restaurant);
     } catch (e) {
-      _state = ResultStateError('Tolong cek koneksi internet anda');
+      _state = ResultStateError('Failed to load restaurant');
     }
 
     notifyListeners();

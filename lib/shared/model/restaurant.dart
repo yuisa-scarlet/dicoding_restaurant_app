@@ -36,14 +36,14 @@ class Restaurant {
     rating: (json['rating'] as num).toDouble(),
     address: json['address'],
     categories: json['categories'] == null
-        ? null
-        : List<Item>.from(json['categories'].map((x) => Item.fromJson(x))),
+      ? null
+      : List<Item>.from(json['categories'].map((category) => Item.fromJson(category))),
     menus: json['menus'] == null ? null : Menu.fromJson(json['menus']),
     customerReviews: json['customerReviews'] == null
-        ? null
-        : List<CustomerReview>.from(
-            json['customerReviews'].map((x) => CustomerReview.fromJson(x)),
-          ),
+      ? null
+      : List<CustomerReview>.from(
+          json['customerReviews'].map((review) => CustomerReview.fromJson(review)),
+        ),
   );
 
   Map<String, dynamic> toJson() => {
@@ -55,11 +55,11 @@ class Restaurant {
     'rating': rating,
     if (address != null) 'address': address,
     if (categories != null)
-      'categories': List<dynamic>.from(categories!.map((x) => x.toJson())),
+      'categories': List<dynamic>.from(categories!.map((category) => category.toJson())),
     if (menus != null) 'menus': menus!.toJson(),
     if (customerReviews != null)
       'customerReviews': List<dynamic>.from(
-        customerReviews!.map((x) => x.toJson()),
+        customerReviews!.map((review) => review.toJson()),
       ),
   };
 }

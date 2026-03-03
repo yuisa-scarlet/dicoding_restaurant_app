@@ -5,10 +5,11 @@ import 'package:dicoding_restaurant_app/core/result_state.dart';
 import 'package:dicoding_restaurant_app/shared/model/restaurant.dart';
 import 'package:dicoding_restaurant_app/features/home/providers/restaurant_list/restaurant_list_provider.dart';
 import 'package:dicoding_restaurant_app/features/home/widgets/restaurant_card.dart';
+import 'package:dicoding_restaurant_app/features/setting/screens/setting_screen.dart';
+import 'package:dicoding_restaurant_app/shared/widgets/restaurant_bottom_navigation.dart';
 
 class HomeScreen extends StatefulWidget {
-  static const String routePath = '/home';
-  static const String routeName = 'home';
+  static const String routeName = '/';
 
   const HomeScreen({super.key});
 
@@ -17,11 +18,37 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  int _currentIndex = 0;
+
+  final List<Widget> _pages = const [_HomeBody(), SettingScreen()];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: IndexedStack(index: _currentIndex, children: _pages),
+      bottomNavigationBar: RestaurantBottomNavigation(
+        currentIndex: _currentIndex,
+        onTap: (index) => setState(() => _currentIndex = index),
+      ),
+    );
+  }
+}
+
+class _HomeBody extends StatefulWidget {
+  const _HomeBody();
+
+  @override
+  State<_HomeBody> createState() => _HomeBodyState();
+}
+
+class _HomeBodyState extends State<_HomeBody> {
   @override
   void initState() {
     super.initState();
     Future.microtask(() {
-      context.read<RestaurantListProvider>().fetchRestaurants();
+      if (mounted) {
+        context.read<RestaurantListProvider>().getAllRestaurants();
+      }
     });
   }
 
@@ -66,7 +93,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   Text(state.errorMessage, textAlign: TextAlign.center),
                   const SizedBox(height: 16),
                   ElevatedButton(
-                    onPressed: () => provider.fetchRestaurants(),
+                    onPressed: () => provider.getAllRestaurants(),
                     child: const Text('Retry'),
                   ),
                 ],

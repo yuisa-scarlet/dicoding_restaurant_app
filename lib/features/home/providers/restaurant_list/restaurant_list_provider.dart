@@ -8,39 +8,35 @@ class RestaurantListProvider extends ChangeNotifier {
   final ApiClient apiClient;
 
   RestaurantListProvider({required this.apiClient}) {
-    fetchRestaurants();
+    getAllRestaurants();
   }
 
   ResultState<List<Restaurant>> _state = ResultStateInitial();
   ResultState<List<Restaurant>> get state => _state;
 
-  Future<void> fetchRestaurants() async {
+  Future<void> getAllRestaurants() async {
     _state = ResultStateLoading();
     notifyListeners();
 
     try {
       final response = await apiClient.get('/list');
-      
-      if (response.statusCode == 200) {
-        final result = jsonDecode(response.body);
-        if (result['error'] == false) {
-          final List<Restaurant> restaurants = List<Restaurant>.from(
-            result['restaurants'].map((x) => Restaurant.fromJson(x)),
-          );
 
-          if (restaurants.isEmpty) {
-            _state = ResultStateError('Tidak ada data restoran');
-          } else {
-            _state = ResultStateSuccess(restaurants);
-          }
-        } else {
-          _state = ResultStateError(result['message'] ?? 'Load failed');
-        }
+      if (response.statusCode != 200) {
+        throw Exception('Failed to load restaurant');
+      }
+
+      final result = jsonDecode(response.body);
+      final List<Restaurant> restaurants = List<Restaurant>.from(
+        result['restaurants'].map((x) => Restaurant.fromJson(x)),
+      );
+
+      if (restaurants.isEmpty) {
+        _state = ResultStateError('No restaurant data');
       } else {
-        _state = ResultStateError('Server Error: ${response.statusCode}');
+        _state = ResultStateSuccess(restaurants);
       }
     } catch (e) {
-      _state = ResultStateError('Tolong cek koneksi internet anda');
+      _state = ResultStateError('Failed to load restaurant');
     }
 
     notifyListeners();
