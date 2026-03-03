@@ -8,7 +8,9 @@ class Menu {
 
   factory Menu.fromJson(Map<String, dynamic> json) => Menu(
     foods: List<Item>.from(json['foods'].map((food) => Item.fromJson(food))),
-    drinks: List<Item>.from(json['drinks'].map((drink) => Item.fromJson(drink))),
+    drinks: List<Item>.from(
+      json['drinks'].map((drink) => Item.fromJson(drink)),
+    ),
   );
 
   Map<String, dynamic> toJson() => {

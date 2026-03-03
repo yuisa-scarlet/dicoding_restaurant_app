@@ -125,9 +125,7 @@ class _AddReviewSheetState extends State<AddReviewSheet> {
             TextField(
               controller: _nameController,
               textCapitalization: TextCapitalization.words,
-              decoration: _inputDecoration(
-                label: 'Your Name',
-              ),
+              decoration: _inputDecoration(label: 'Your Name'),
             ),
             const SizedBox(height: 12),
             TextField(
