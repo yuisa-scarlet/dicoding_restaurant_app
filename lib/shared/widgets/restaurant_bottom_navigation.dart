@@ -1,17 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 
-class RestaurantBottomNavigation extends StatefulWidget {
-  const RestaurantBottomNavigation({super.key});
+class RestaurantBottomNavigation extends StatelessWidget {
+  final int currentIndex;
+  final ValueChanged<int> onTap;
 
-  @override
-  State<RestaurantBottomNavigation> createState() => _RestaurantBottomNavigationState();
-}
-
-class _RestaurantBottomNavigationState extends State<RestaurantBottomNavigation> {
-  void _onItemTapped(int index) {
-    
-  }
+  const RestaurantBottomNavigation({
+    super.key,
+    required this.currentIndex,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -22,13 +20,13 @@ class _RestaurantBottomNavigationState extends State<RestaurantBottomNavigation>
       unselectedFontSize: 12,
       selectedItemColor: Theme.of(context).colorScheme.primary,
       selectedFontSize: 12,
-      selectedLabelStyle: TextStyle(
-        fontWeight: FontWeight.bold,
-      ),
+      currentIndex: currentIndex,
+      onTap: onTap,
+      selectedLabelStyle: const TextStyle(fontWeight: FontWeight.bold),
       items: [
         _buildNavItem(LucideIcons.home, 'Home'),
         _buildNavItem(LucideIcons.settings, 'Setting'),
-      ]
+      ],
     );
   }
 
@@ -36,7 +34,7 @@ class _RestaurantBottomNavigationState extends State<RestaurantBottomNavigation>
     return BottomNavigationBarItem(
       icon: Icon(icon),
       label: label,
-      tooltip: label
+      tooltip: label,
     );
   }
 }
