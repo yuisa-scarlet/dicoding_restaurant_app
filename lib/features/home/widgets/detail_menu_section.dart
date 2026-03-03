@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:dicoding_restaurant_app/core/app_color.dart';
 
 class DetailMenuSection extends StatelessWidget {
   final String title;
@@ -20,14 +21,27 @@ class DetailMenuSection extends StatelessWidget {
           style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
         ),
         const SizedBox(height: 8),
-        SizedBox(
-          height: 40,
-          child: ListView.separated(
-            scrollDirection: Axis.horizontal,
-            itemCount: items.length,
-            separatorBuilder: (_, __) => const SizedBox(width: 8),
-            itemBuilder: (context, index) => Chip(label: Text(items[index])),
-          ),
+        Wrap(
+          spacing: 6,
+          runSpacing: 0,
+          children: items
+              .map(
+                (item) => Chip(
+                  label: Text(
+                    item,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w500,
+                      color: Colors.white,
+                      fontSize: 12,
+                    ),
+                  ),
+                  backgroundColor: AppColor.selected,
+                  elevation: 0,
+                  shadowColor: Colors.transparent,
+                  side: const BorderSide(color: Colors.transparent),
+                ),
+              )
+              .toList(),
         ),
       ],
     );

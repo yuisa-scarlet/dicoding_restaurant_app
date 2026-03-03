@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:dicoding_restaurant_app/core/app_color.dart';
 import 'package:dicoding_restaurant_app/shared/model/restaurant.dart';
 
 class DetailInfo extends StatelessWidget {
@@ -12,28 +13,44 @@ class DetailInfo extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          restaurant.name,
-          style: Theme.of(
-            context,
-          ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
+          restaurant.name.toUpperCase(),
+          style: const TextStyle(
+            fontFamily: 'InstrumentSerif',
+            fontSize: 28,
+            fontWeight: FontWeight.w600,
+            letterSpacing: 0.5,
+          ),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 6),
+
         Row(
           children: [
-            const Icon(Icons.location_on, color: Colors.grey),
-            const SizedBox(width: 8),
-            Text('${restaurant.city}, ${restaurant.address ?? ""}'),
+            Icon(Icons.location_on, size: 14, color: AppColor.selected),
+            const SizedBox(width: 2),
+            Text(restaurant.city, style: const TextStyle(fontSize: 12)),
+            if (restaurant.address != null &&
+                restaurant.address!.isNotEmpty) ...[
+              const Text(', ', style: TextStyle(fontSize: 12)),
+              Expanded(
+                child: Text(
+                  restaurant.address!,
+                  style: const TextStyle(fontSize: 12),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ],
+            const SizedBox(width: 12),
+            Icon(Icons.star_rounded, size: 14, color: AppColor.selected),
+            const SizedBox(width: 2),
+            Text(
+              restaurant.rating.toString(),
+              style: const TextStyle(fontSize: 12),
+            ),
           ],
         ),
-        const SizedBox(height: 8),
-        Row(
-          children: [
-            const Icon(Icons.star, color: Colors.amber),
-            const SizedBox(width: 8),
-            Text(restaurant.rating.toString()),
-          ],
-        ),
+
         const SizedBox(height: 16),
+
         const Text(
           'Description',
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),

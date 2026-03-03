@@ -15,10 +15,8 @@ class RestaurantBottomNavigation extends StatelessWidget {
   Widget build(BuildContext context) {
     return BottomNavigationBar(
       elevation: 0.2,
-      backgroundColor: Theme.of(context).colorScheme.surface,
       type: BottomNavigationBarType.fixed,
       unselectedFontSize: 12,
-      selectedItemColor: Theme.of(context).colorScheme.primary,
       selectedFontSize: 12,
       currentIndex: currentIndex,
       onTap: onTap,
