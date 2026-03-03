@@ -2,19 +2,31 @@ import 'package:flutter/material.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:dicoding_restaurant_app/core/app_color.dart';
+import 'package:dicoding_restaurant_app/features/home/providers/add_review_provider.dart';
 import 'package:dicoding_restaurant_app/features/home/providers/restaurant_detail/restaurant_detail_provider.dart';
 
-class AddReviewSheet extends StatefulWidget {
+class AddReviewSheet extends StatelessWidget {
   const AddReviewSheet({super.key});
 
   @override
-  State<AddReviewSheet> createState() => _AddReviewSheetState();
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider(
+      create: (_) => AddReviewProvider(),
+      child: const _AddReviewSheetContent(),
+    );
+  }
 }
 
-class _AddReviewSheetState extends State<AddReviewSheet> {
+class _AddReviewSheetContent extends StatefulWidget {
+  const _AddReviewSheetContent();
+
+  @override
+  State<_AddReviewSheetContent> createState() => _AddReviewSheetContentState();
+}
+
+class _AddReviewSheetContentState extends State<_AddReviewSheetContent> {
   final _nameController = TextEditingController();
   final _reviewController = TextEditingController();
-  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -23,7 +35,7 @@ class _AddReviewSheetState extends State<AddReviewSheet> {
     super.dispose();
   }
 
-  void _submitReview() async {
+  Future<void> _submitReview(BuildContext context) async {
     final name = _nameController.text.trim();
     final review = _reviewController.text.trim();
 
@@ -34,27 +46,29 @@ class _AddReviewSheetState extends State<AddReviewSheet> {
       return;
     }
 
-    setState(() => _isLoading = true);
+    final reviewProvider = context.read<AddReviewProvider>();
+    reviewProvider.setLoading(true);
 
     try {
       await context.read<RestaurantDetailProvider>().addReview(name, review);
-      if (mounted) {
+      if (context.mounted) {
         Navigator.pop(context);
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Review added successfully!')),
         );
       }
     } catch (e) {
-      if (mounted) {
+      if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(e.toString().replaceAll('Exception: ', ''))),
         );
-        setState(() => _isLoading = false);
+        reviewProvider.setLoading(false);
       }
     }
   }
 
-  InputDecoration _inputDecoration({
+  InputDecoration _inputDecoration(
+    BuildContext context, {
     required String label,
     bool alignTop = false,
   }) {
@@ -125,7 +139,7 @@ class _AddReviewSheetState extends State<AddReviewSheet> {
             TextField(
               controller: _nameController,
               textCapitalization: TextCapitalization.words,
-              decoration: _inputDecoration(label: 'Your Name'),
+              decoration: _inputDecoration(context, label: 'Your Name'),
             ),
             const SizedBox(height: 12),
             TextField(
@@ -133,45 +147,52 @@ class _AddReviewSheetState extends State<AddReviewSheet> {
               maxLines: 4,
               textCapitalization: TextCapitalization.sentences,
               decoration: _inputDecoration(
+                context,
                 label: 'Write your review...',
                 alignTop: true,
               ),
             ),
             const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: _isLoading ? null : _submitReview,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColor.selected,
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                elevation: 0,
-              ),
-              child: _isLoading
-                  ? const SizedBox(
-                      width: 22,
-                      height: 22,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        color: Colors.white,
-                      ),
-                    )
-                  : const Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(LucideIcons.send, size: 16),
-                        SizedBox(width: 8),
-                        Text(
-                          'Submit Review',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ],
+            Consumer<AddReviewProvider>(
+              builder: (context, reviewState, _) {
+                return ElevatedButton(
+                  onPressed: reviewState.isLoading
+                      ? null
+                      : () => _submitReview(context),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColor.selected,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
                     ),
+                    elevation: 0,
+                  ),
+                  child: reviewState.isLoading
+                      ? const SizedBox(
+                          width: 22,
+                          height: 22,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: Colors.white,
+                          ),
+                        )
+                      : const Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(LucideIcons.send, size: 16),
+                            SizedBox(width: 8),
+                            Text(
+                              'Submit Review',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
+                        ),
+                );
+              },
             ),
             const SizedBox(height: 24),
           ],

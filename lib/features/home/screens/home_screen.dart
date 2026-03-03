@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:dicoding_restaurant_app/core/base_result_state.dart';
 import 'package:dicoding_restaurant_app/shared/model/restaurant.dart';
+import 'package:dicoding_restaurant_app/features/home/providers/navigation_provider.dart';
 import 'package:dicoding_restaurant_app/features/home/providers/restaurant_list/restaurant_list_provider.dart';
 import 'package:dicoding_restaurant_app/features/home/widgets/home_loading_view.dart';
 import 'package:dicoding_restaurant_app/features/home/widgets/home_error_view.dart';
@@ -10,27 +11,27 @@ import 'package:dicoding_restaurant_app/features/home/widgets/home_success_view.
 import 'package:dicoding_restaurant_app/features/setting/screens/setting_screen.dart';
 import 'package:dicoding_restaurant_app/shared/widgets/restaurant_bottom_navigation.dart';
 
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends StatelessWidget {
   static const String routeName = '/';
 
   const HomeScreen({super.key});
 
-  @override
-  State<HomeScreen> createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
-  int _currentIndex = 0;
-
-  final List<Widget> _pages = const [_HomeBody(), SettingScreen()];
+  static const List<Widget> _pages = [_HomeBody(), SettingScreen()];
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: IndexedStack(index: _currentIndex, children: _pages),
-      bottomNavigationBar: RestaurantBottomNavigation(
-        currentIndex: _currentIndex,
-        onTap: (index) => setState(() => _currentIndex = index),
+    return ChangeNotifierProvider(
+      create: (_) => NavigationProvider(),
+      child: Consumer<NavigationProvider>(
+        builder: (context, nav, _) {
+          return Scaffold(
+            body: IndexedStack(index: nav.currentIndex, children: _pages),
+            bottomNavigationBar: RestaurantBottomNavigation(
+              currentIndex: nav.currentIndex,
+              onTap: nav.setIndex,
+            ),
+          );
+        },
       ),
     );
   }

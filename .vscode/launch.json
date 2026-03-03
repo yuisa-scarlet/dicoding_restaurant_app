@@ -8,7 +8,8 @@
             "name": "Launch App",
             "request": "launch",
             "type": "dart",
-            "program": "lib/main.dart"
+            "program": "lib/main.dart",
+            "args": ["--profile"]
         }
     ]
 }
