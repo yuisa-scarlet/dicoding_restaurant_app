@@ -2,10 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:dicoding_restaurant_app/core/app_color.dart';
 import 'package:dicoding_restaurant_app/shared/model/restaurant.dart';
 
-class DetailInfo extends StatelessWidget {
+class DetailInfo extends StatefulWidget {
   final Restaurant restaurant;
 
   const DetailInfo({super.key, required this.restaurant});
+
+  @override
+  State<DetailInfo> createState() => _DetailInfoState();
+}
+
+class _DetailInfoState extends State<DetailInfo> {
+  bool _isExpanded = false;
 
   @override
   Widget build(BuildContext context) {
@@ -13,7 +20,7 @@ class DetailInfo extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          restaurant.name.toUpperCase(),
+          widget.restaurant.name.toUpperCase(),
           style: const TextStyle(
             fontFamily: 'InstrumentSerif',
             fontSize: 28,
@@ -27,13 +34,13 @@ class DetailInfo extends StatelessWidget {
           children: [
             Icon(Icons.location_on, size: 14, color: AppColor.selected),
             const SizedBox(width: 2),
-            Text(restaurant.city, style: const TextStyle(fontSize: 12)),
-            if (restaurant.address != null &&
-                restaurant.address!.isNotEmpty) ...[
+            Text(widget.restaurant.city, style: const TextStyle(fontSize: 12)),
+            if (widget.restaurant.address != null &&
+                widget.restaurant.address!.isNotEmpty) ...[
               const Text(', ', style: TextStyle(fontSize: 12)),
               Expanded(
                 child: Text(
-                  restaurant.address!,
+                  widget.restaurant.address!,
                   style: const TextStyle(fontSize: 12),
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -43,7 +50,7 @@ class DetailInfo extends StatelessWidget {
             Icon(Icons.star_rounded, size: 14, color: AppColor.selected),
             const SizedBox(width: 2),
             Text(
-              restaurant.rating.toString(),
+              widget.restaurant.rating.toString(),
               style: const TextStyle(fontSize: 12),
             ),
           ],
@@ -52,11 +59,38 @@ class DetailInfo extends StatelessWidget {
         const SizedBox(height: 16),
 
         const Text(
-          'Description',
+          'Deskripsi',
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
         ),
         const SizedBox(height: 8),
-        Text(restaurant.description),
+        InkWell(
+          onTap: () {
+            setState(() {
+              _isExpanded = !_isExpanded;
+            });
+          },
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                widget.restaurant.description,
+                maxLines: _isExpanded ? null : 4,
+                overflow: _isExpanded
+                    ? TextOverflow.visible
+                    : TextOverflow.ellipsis,
+              ),
+              const SizedBox(height: 4),
+              Text(
+                _isExpanded ? 'Tampilkan Lebih Sedikit' : 'Baca Selengkapnya',
+                style: TextStyle(
+                  color: AppColor.primary,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 14,
+                ),
+              ),
+            ],
+          ),
+        ),
       ],
     );
   }

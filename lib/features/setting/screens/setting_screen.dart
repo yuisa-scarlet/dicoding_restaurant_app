@@ -51,7 +51,7 @@ class _SettingScreenState extends State<SettingScreen> {
                     style: TextStyle(fontSize: 12, color: Colors.grey),
                   ),
                   secondary: const Icon(Icons.dark_mode_outlined),
-                  activeColor: AppColor.selected,
+                  activeThumbColor: AppColor.selected,
                   value: provider.isDarkMode,
                   onChanged: provider.toggleTheme,
                   shape: RoundedRectangleBorder(
