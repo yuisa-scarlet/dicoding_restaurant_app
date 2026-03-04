@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:dicoding_restaurant_app/shared/widgets/restaurant_bottom_navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:dicoding_restaurant_app/core/base_result_state.dart';
@@ -10,14 +11,18 @@ import 'package:dicoding_restaurant_app/features/home/widgets/home_error_view.da
 import 'package:dicoding_restaurant_app/features/home/widgets/home_success_view.dart';
 import 'package:dicoding_restaurant_app/features/home/widgets/restaurant_search_delegate.dart';
 import 'package:dicoding_restaurant_app/features/setting/screens/setting_screen.dart';
-import 'package:dicoding_restaurant_app/shared/widgets/restaurant_bottom_navigation.dart';
+import 'package:dicoding_restaurant_app/features/favorite/screens/favorite_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   static const String routeName = '/';
 
   const HomeScreen({super.key});
 
-  static const List<Widget> _pages = [_HomeBody(), SettingScreen()];
+  static const List<Widget> _pages = [
+    _HomeBody(),
+    FavoriteScreen(),
+    SettingScreen(),
+  ];
 
   @override
   Widget build(BuildContext context) {

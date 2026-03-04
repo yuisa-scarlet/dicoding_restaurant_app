@@ -1,5 +1,7 @@
 ## ARCHITECTURE
 
+When running app always using `fvm` command
+
 State Management: Provider
 Network: http
 Loading animation: Shimmer
@@ -47,6 +49,7 @@ lib/
 1. Home Screen
 2. Home Detail Screen
 3. Setting Screen
+4. Favorite Screen
 
 
 ## PROVIDER

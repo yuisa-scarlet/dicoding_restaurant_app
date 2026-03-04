@@ -1,18 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:dicoding_restaurant_app/core/app_color.dart';
 import 'package:dicoding_restaurant_app/shared/models/restaurant.dart';
 
-class DetailInfo extends StatefulWidget {
+class DetailInfo extends StatelessWidget {
   final Restaurant restaurant;
 
   const DetailInfo({super.key, required this.restaurant});
-
-  @override
-  State<DetailInfo> createState() => _DetailInfoState();
-}
-
-class _DetailInfoState extends State<DetailInfo> {
-  bool _isExpanded = false;
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +14,7 @@ class _DetailInfoState extends State<DetailInfo> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          widget.restaurant.name.toUpperCase(),
+          restaurant.name.toUpperCase(),
           style: const TextStyle(
             fontFamily: 'InstrumentSerif',
             fontSize: 28,
@@ -34,13 +28,13 @@ class _DetailInfoState extends State<DetailInfo> {
           children: [
             Icon(Icons.location_on, size: 14, color: AppColor.selected),
             const SizedBox(width: 2),
-            Text(widget.restaurant.city, style: const TextStyle(fontSize: 12)),
-            if (widget.restaurant.address != null &&
-                widget.restaurant.address!.isNotEmpty) ...[
+            Text(restaurant.city, style: const TextStyle(fontSize: 12)),
+            if (restaurant.address != null &&
+                restaurant.address!.isNotEmpty) ...[
               const Text(', ', style: TextStyle(fontSize: 12)),
               Expanded(
                 child: Text(
-                  widget.restaurant.address!,
+                  restaurant.address!,
                   style: const TextStyle(fontSize: 12),
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -50,7 +44,7 @@ class _DetailInfoState extends State<DetailInfo> {
             Icon(Icons.star_rounded, size: 14, color: AppColor.selected),
             const SizedBox(width: 2),
             Text(
-              widget.restaurant.rating.toString(),
+              restaurant.rating.toString(),
               style: const TextStyle(fontSize: 12),
             ),
           ],
@@ -63,32 +57,40 @@ class _DetailInfoState extends State<DetailInfo> {
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
         ),
         const SizedBox(height: 8),
-        InkWell(
-          onTap: () {
-            setState(() {
-              _isExpanded = !_isExpanded;
-            });
-          },
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                widget.restaurant.description,
-                maxLines: _isExpanded ? null : 4,
-                overflow: _isExpanded
-                    ? TextOverflow.visible
-                    : TextOverflow.ellipsis,
-              ),
-              const SizedBox(height: 4),
-              Text(
-                _isExpanded ? 'Tampilkan Lebih Sedikit' : 'Baca Selengkapnya',
-                style: TextStyle(
-                  color: AppColor.primary,
-                  fontWeight: FontWeight.w600,
-                  fontSize: 14,
+        ChangeNotifierProvider(
+          create: (_) => ValueNotifier<bool>(false),
+          child: Consumer<ValueNotifier<bool>>(
+            builder: (context, isExpandedNotifier, _) {
+              final isExpanded = isExpandedNotifier.value;
+              return InkWell(
+                onTap: () {
+                  isExpandedNotifier.value = !isExpanded;
+                },
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      restaurant.description,
+                      maxLines: isExpanded ? null : 4,
+                      overflow: isExpanded
+                          ? TextOverflow.visible
+                          : TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      isExpanded
+                          ? 'Tampilkan Lebih Sedikit'
+                          : 'Baca Selengkapnya',
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.primary,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 14,
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-            ],
+              );
+            },
           ),
         ),
       ],

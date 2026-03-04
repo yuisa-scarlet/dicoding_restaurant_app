@@ -9,6 +9,7 @@
             "request": "launch",
             "type": "dart",
             "program": "lib/main.dart",
+            "args": ["--debug"]
         },
         {
             "name": "Launch Profile Mode",

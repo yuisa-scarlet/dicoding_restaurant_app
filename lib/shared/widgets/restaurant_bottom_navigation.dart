@@ -23,6 +23,7 @@ class RestaurantBottomNavigation extends StatelessWidget {
       selectedLabelStyle: const TextStyle(fontWeight: FontWeight.bold),
       items: [
         _buildNavItem(LucideIcons.home, 'Home'),
+        _buildNavItem(Icons.favorite_rounded, 'Favorite'),
         _buildNavItem(LucideIcons.settings, 'Setting'),
       ],
     );

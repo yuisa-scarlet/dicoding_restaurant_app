@@ -6,7 +6,7 @@ import 'package:dicoding_restaurant_app/shared/services/shared_preference_servic
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
+
   final prefs = await SharedPreferences.getInstance();
 
   runApp(

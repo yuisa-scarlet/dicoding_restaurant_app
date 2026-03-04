@@ -19,7 +19,6 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    // Pastikan app setidaknya bisa dirender.
     expect(find.byType(MaterialApp), findsOneWidget);
   });
 }

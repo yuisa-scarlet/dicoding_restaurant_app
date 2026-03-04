@@ -6,13 +6,18 @@ import 'package:dicoding_restaurant_app/shared/models/restaurant.dart';
 
 class DetailHeroImage extends StatelessWidget {
   final Restaurant restaurant;
+  final String heroTagPrefix;
 
-  const DetailHeroImage({super.key, required this.restaurant});
+  const DetailHeroImage({
+    super.key,
+    required this.restaurant,
+    this.heroTagPrefix = '',
+  });
 
   @override
   Widget build(BuildContext context) {
     return Hero(
-      tag: restaurant.pictureId,
+      tag: '$heroTagPrefix${restaurant.pictureId}',
       child: CachedNetworkImage(
         imageUrl: '${Config.baseUrl}/images/medium/${restaurant.pictureId}',
         width: double.infinity,

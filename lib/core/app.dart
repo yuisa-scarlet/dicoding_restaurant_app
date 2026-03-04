@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:dicoding_restaurant_app/shared/services/shared_preference_service.dart';
+import 'package:dicoding_restaurant_app/shared/services/sqlite_database_service.dart';
+import 'package:dicoding_restaurant_app/shared/providers/sqlite_database_provider.dart';
 import 'package:dicoding_restaurant_app/core/api_client.dart';
 import 'package:dicoding_restaurant_app/features/home/providers/restaurant_list/restaurant_list_provider.dart';
 import 'package:dicoding_restaurant_app/features/home/providers/restaurant_detail/restaurant_detail_provider.dart';
@@ -83,18 +85,27 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+        Provider<SqliteDatabaseService>(create: (_) => SqliteDatabaseService()),
+        ChangeNotifierProvider<SqliteDatabaseProvider>(
+          create: (context) {
+            return SqliteDatabaseProvider(context.read<SqliteDatabaseService>());
+          }
+        ),
         Provider<ApiClient>(create: (_) => ApiClient(baseUrl: Config.baseUrl)),
         ChangeNotifierProvider<RestaurantListProvider>(
-          create: (context) =>
-              RestaurantListProvider(apiClient: context.read<ApiClient>()),
+          create: (context) {
+            return RestaurantListProvider(apiClient: context.read<ApiClient>());
+          },
         ),
         ChangeNotifierProvider<RestaurantDetailProvider>(
-          create: (context) =>
-              RestaurantDetailProvider(apiClient: context.read<ApiClient>()),
+          create: (context) {
+            return RestaurantDetailProvider(apiClient: context.read<ApiClient>());
+          },
         ),
         ChangeNotifierProvider<ThemeProvider>(
-          create: (context) =>
-              ThemeProvider(context.read<SharedPreferenceService>()),
+          create: (context) {
+            return ThemeProvider(context.read<SharedPreferenceService>());
+          },
         ),
       ],
       child: Consumer<ThemeProvider>(

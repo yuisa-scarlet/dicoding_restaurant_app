@@ -6,8 +6,13 @@ import 'package:dicoding_restaurant_app/features/home/widgets/detail_menu_sectio
 
 class DetailSuccessView extends StatelessWidget {
   final Restaurant restaurant;
+  final String heroTagPrefix;
 
-  const DetailSuccessView({super.key, required this.restaurant});
+  const DetailSuccessView({
+    super.key,
+    required this.restaurant,
+    this.heroTagPrefix = '',
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +21,10 @@ class DetailSuccessView extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            DetailHeroImage(restaurant: restaurant),
+            DetailHeroImage(
+              restaurant: restaurant,
+              heroTagPrefix: heroTagPrefix,
+            ),
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 16, 16, 48),
               child: Column(

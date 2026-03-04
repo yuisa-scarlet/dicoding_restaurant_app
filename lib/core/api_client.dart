@@ -39,8 +39,8 @@ class ApiInterceptor extends http.BaseClient {
 
 abstract class BaseApiClient {
   static http.Client _createClient(String baseUrl) {
-    final http.Client client = http.Client();
-    final http.Client inner = kDebugMode ? client : ApiInterceptor(client);
+    final client = http.Client();
+    final inner = kDebugMode ? client : ApiInterceptor(client);
 
     return _ConfiguredClient(inner, baseUrl);
   }
@@ -62,9 +62,7 @@ class _ConfiguredClient extends http.BaseClient {
     if (!newUrl.isAbsolute) {
       String base = _baseUrl.endsWith('/') ? _baseUrl : '$_baseUrl/';
       String path = newUrl.toString();
-      if (path.startsWith('/')) {
-        path = path.substring(1);
-      }
+      if (path.startsWith('/')) path = path.substring(1);
       newUrl = Uri.parse('$base$path');
 
       if (request is http.Request) {
