@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:dicoding_restaurant_app/core/base_result_state.dart';
-import 'package:dicoding_restaurant_app/shared/model/restaurant.dart';
+import 'package:dicoding_restaurant_app/shared/models/restaurant.dart';
 import 'package:dicoding_restaurant_app/features/home/providers/restaurant_detail/restaurant_detail_provider.dart';
 import 'package:dicoding_restaurant_app/features/home/widgets/detail_loading_view.dart';
 import 'package:dicoding_restaurant_app/features/home/widgets/detail_error_view.dart';

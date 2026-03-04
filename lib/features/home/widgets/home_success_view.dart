@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:dicoding_restaurant_app/shared/model/restaurant.dart';
+import 'package:dicoding_restaurant_app/shared/models/restaurant.dart';
 import 'package:dicoding_restaurant_app/features/home/widgets/restaurant_card.dart';
 
 class HomeSuccessView extends StatelessWidget {

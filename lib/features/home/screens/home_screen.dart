@@ -2,12 +2,13 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:dicoding_restaurant_app/core/base_result_state.dart';
-import 'package:dicoding_restaurant_app/shared/model/restaurant.dart';
+import 'package:dicoding_restaurant_app/shared/models/restaurant.dart';
 import 'package:dicoding_restaurant_app/features/home/providers/navigation_provider.dart';
 import 'package:dicoding_restaurant_app/features/home/providers/restaurant_list/restaurant_list_provider.dart';
 import 'package:dicoding_restaurant_app/features/home/widgets/home_loading_view.dart';
 import 'package:dicoding_restaurant_app/features/home/widgets/home_error_view.dart';
 import 'package:dicoding_restaurant_app/features/home/widgets/home_success_view.dart';
+import 'package:dicoding_restaurant_app/features/home/widgets/restaurant_search_delegate.dart';
 import 'package:dicoding_restaurant_app/features/setting/screens/setting_screen.dart';
 import 'package:dicoding_restaurant_app/shared/widgets/restaurant_bottom_navigation.dart';
 
@@ -45,9 +46,6 @@ class _HomeBody extends StatefulWidget {
 }
 
 class _HomeBodyState extends State<_HomeBody> {
-  final TextEditingController _searchController = TextEditingController();
-  Timer? _debounce;
-
   @override
   void initState() {
     super.initState();
@@ -59,48 +57,21 @@ class _HomeBodyState extends State<_HomeBody> {
   }
 
   @override
-  void dispose() {
-    _debounce?.cancel();
-    _searchController.dispose();
-    super.dispose();
-  }
-
-  void _onSearchChanged(String query) {
-    if (_debounce?.isActive ?? false) _debounce!.cancel();
-    _debounce = Timer(const Duration(milliseconds: 500), () {
-      if (mounted) {
-        context.read<RestaurantListProvider>().searchRestaurants(query);
-      }
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: TextField(
-          controller: _searchController,
-          decoration: InputDecoration(
-            hintText: 'Search restaurant...',
-            prefixIcon: const Icon(Icons.search),
-            suffixIcon: IconButton(
-              icon: const Icon(Icons.clear),
-              onPressed: () {
-                _searchController.clear();
-                _onSearchChanged('');
-                FocusScope.of(context).unfocus();
-              },
-            ),
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(30)),
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: 16,
-              vertical: 8,
-            ),
-            filled: true,
-            fillColor: Theme.of(context).colorScheme.surface,
+        title: const Text('Restaurant App'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.search),
+            onPressed: () {
+              showSearch(
+                context: context,
+                delegate: RestaurantSearchDelegate(),
+              );
+            },
           ),
-          onChanged: _onSearchChanged,
-        ),
+        ],
       ),
       body: Consumer<RestaurantListProvider>(
         builder: (context, provider, child) {

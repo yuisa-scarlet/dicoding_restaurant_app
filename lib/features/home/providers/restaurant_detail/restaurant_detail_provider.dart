@@ -3,8 +3,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:dicoding_restaurant_app/core/api_client.dart';
 import 'package:dicoding_restaurant_app/core/base_result_state.dart';
-import 'package:dicoding_restaurant_app/shared/model/restaurant.dart';
-import 'package:dicoding_restaurant_app/shared/model/customer_review.dart';
+import 'package:dicoding_restaurant_app/shared/models/restaurant.dart';
+import 'package:dicoding_restaurant_app/shared/models/customer_review.dart';
 
 class RestaurantDetailProvider extends ChangeNotifier {
   final ApiClient apiClient;

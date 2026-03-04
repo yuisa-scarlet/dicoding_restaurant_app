@@ -3,6 +3,7 @@ import 'package:dicoding_restaurant_app/core/config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:dicoding_restaurant_app/shared/services/shared_preference_service.dart';
 import 'package:dicoding_restaurant_app/core/api_client.dart';
 import 'package:dicoding_restaurant_app/features/home/providers/restaurant_list/restaurant_list_provider.dart';
 import 'package:dicoding_restaurant_app/features/home/providers/restaurant_detail/restaurant_detail_provider.dart';
@@ -91,7 +92,10 @@ class App extends StatelessWidget {
           create: (context) =>
               RestaurantDetailProvider(apiClient: context.read<ApiClient>()),
         ),
-        ChangeNotifierProvider<ThemeProvider>(create: (_) => ThemeProvider()),
+        ChangeNotifierProvider<ThemeProvider>(
+          create: (context) =>
+              ThemeProvider(context.read<SharedPreferenceService>()),
+        ),
       ],
       child: Consumer<ThemeProvider>(
         builder: (context, themeProvider, _) {

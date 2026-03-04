@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:dicoding_restaurant_app/core/app_color.dart';
-import 'package:dicoding_restaurant_app/shared/model/restaurant.dart';
+import 'package:dicoding_restaurant_app/shared/models/restaurant.dart';
 
 class DetailInfo extends StatefulWidget {
   final Restaurant restaurant;

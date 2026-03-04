@@ -86,3 +86,22 @@ lib/
 - Menggunakan library state management Provider.
 - Cukup menggunakan satu state management untuk mengelola state.
 - Manfaatkan sealed class, khususnya pada saat memanggil Web API.
+
+6. Membuat Halaman Favorit Restoran
+- Membuat satu halaman khusus berisi daftar favorit restoran. 
+- Menampilkan item card pada halaman daftar favorit yang mencakup informasi minimal, seperti nama, gambar, kota, dan rating restoran. 
+- Apabila item favorit ditekan, aplikasi dapat bernavigasi ke halaman detail. 
+- Pengguna bisa menambah dan menghapus item restoran dari daftar favorit atau detail restoran.
+- Informasi daftar favorit restoran didapatkan melalui pencatatan database SQLite. 
+
+7. Membuat Fitur Pengaturan Daily Reminder
+- Menambahkan pengaturan untuk menghidupkan dan mematikan reminder di halaman setting.
+- Simpan pengaturan Daily Reminder menggunakan penyimpanan shared preferences.
+- Menampilkan notifikasi pada pukul 11.00 AM dengan memanfaatkan Schedule Notification untuk mengingatkan makan siang.
+
+8. Membuat Pengujian (Testing)
+- Menerapkan tiga skenario pengujian pada fungsi di dalam Provider untuk mengambil list data restoran.
+- Berikut skenario yang bisa Anda buat. 
+-- Memastikan state awal provider harus didefinisikan.
+-- Memastikan harus mengembalikan daftar restoran ketika pengambilan data API berhasil.
+-- Memastikan harus mengembalikan kesalahan ketika pengambilan data API gagal.

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:dicoding_restaurant_app/core/config.dart';
-import 'package:dicoding_restaurant_app/shared/model/restaurant.dart';
+import 'package:dicoding_restaurant_app/shared/models/restaurant.dart';
 
 class DetailHeroImage extends StatelessWidget {
   final Restaurant restaurant;
