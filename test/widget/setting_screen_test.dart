@@ -78,7 +78,6 @@ void main() {
       await tester.pumpWidget(createSettingScreen());
       await tester.pumpAndSettle();
 
-      // Find the Daily Reminder SwitchListTile and tap it
       final dailyReminderSwitch = find.widgetWithText(
         SwitchListTile,
         'Daily Reminder',
@@ -88,7 +87,6 @@ void main() {
       await tester.tap(dailyReminderSwitch);
       await tester.pumpAndSettle();
 
-      // Verify the workmanager was called to register
       verify(() => mockWorkmanager.registerDailyReminder()).called(1);
     });
   });

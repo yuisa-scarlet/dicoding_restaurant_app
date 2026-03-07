@@ -32,7 +32,6 @@ class DailyReminderProvider extends ChangeNotifier {
       await _workmanagerService.registerDailyReminder();
       debugPrint('WorkManager periodic task registered');
 
-      // Debug: list pending notifications
       final pending = await _notificationService.pendingNotificationRequests();
       debugPrint('Pending notifications: ${pending.length}');
       for (final p in pending) {

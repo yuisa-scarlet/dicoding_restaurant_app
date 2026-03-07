@@ -80,7 +80,6 @@ void main() {
       expect(restaurants[2].name, 'Bring Your Phone Cafe');
       expect(restaurants[2].city, 'Surabaya');
 
-      // Step 5: Verify the API was called exactly once
       verify(() => mockApiClient.get('/list')).called(1);
     });
   });
