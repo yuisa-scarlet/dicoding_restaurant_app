@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:dicoding_restaurant_app/core/base_result_state.dart';
 import 'package:dicoding_restaurant_app/shared/models/restaurant.dart';
-import 'package:dicoding_restaurant_app/features/home/providers/restaurant_detail/restaurant_detail_provider.dart';
-import 'package:dicoding_restaurant_app/features/home/widgets/detail_loading_view.dart';
-import 'package:dicoding_restaurant_app/features/home/widgets/detail_error_view.dart';
-import 'package:dicoding_restaurant_app/features/home/widgets/detail_success_view.dart';
-import 'package:dicoding_restaurant_app/features/home/widgets/add_review_sheet.dart';
+import 'package:dicoding_restaurant_app/feature/home/providers/restaurant_detail/restaurant_detail_provider.dart';
+import 'package:dicoding_restaurant_app/feature/home/widgets/detail_loading_view.dart';
+import 'package:dicoding_restaurant_app/feature/home/widgets/detail_error_view.dart';
+import 'package:dicoding_restaurant_app/feature/home/widgets/detail_success_view.dart';
+import 'package:dicoding_restaurant_app/feature/home/widgets/add_review_sheet.dart';
 import 'package:dicoding_restaurant_app/shared/providers/sqlite_database_provider.dart';
 
 class HomeDetailScreen extends StatefulWidget {

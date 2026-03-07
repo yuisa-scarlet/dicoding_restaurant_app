@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:dicoding_restaurant_app/core/app_color.dart';
-import 'package:dicoding_restaurant_app/features/setting/providers/theme_provider.dart';
+import 'package:dicoding_restaurant_app/feature/setting/providers/theme_provider.dart';
 
 class SettingScreen extends StatefulWidget {
   static const String routePath = '/setting';

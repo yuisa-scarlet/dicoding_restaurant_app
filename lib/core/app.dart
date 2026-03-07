@@ -7,11 +7,11 @@ import 'package:dicoding_restaurant_app/shared/services/shared_preference_servic
 import 'package:dicoding_restaurant_app/shared/services/sqlite_database_service.dart';
 import 'package:dicoding_restaurant_app/shared/providers/sqlite_database_provider.dart';
 import 'package:dicoding_restaurant_app/core/api_client.dart';
-import 'package:dicoding_restaurant_app/features/home/providers/restaurant_list/restaurant_list_provider.dart';
-import 'package:dicoding_restaurant_app/features/home/providers/restaurant_detail/restaurant_detail_provider.dart';
-import 'package:dicoding_restaurant_app/features/setting/providers/theme_provider.dart';
-import 'package:dicoding_restaurant_app/features/home/screens/home_screen.dart';
-import 'package:dicoding_restaurant_app/features/home/screens/home_detail_screen.dart';
+import 'package:dicoding_restaurant_app/feature/home/providers/restaurant_list/restaurant_list_provider.dart';
+import 'package:dicoding_restaurant_app/feature/home/providers/restaurant_detail/restaurant_detail_provider.dart';
+import 'package:dicoding_restaurant_app/feature/setting/providers/theme_provider.dart';
+import 'package:dicoding_restaurant_app/feature/home/screens/home_screen.dart';
+import 'package:dicoding_restaurant_app/feature/home/screens/home_detail_screen.dart';
 
 class App extends StatelessWidget {
   const App({super.key});

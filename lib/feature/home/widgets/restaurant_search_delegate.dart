@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:dicoding_restaurant_app/core/base_result_state.dart';
 import 'package:dicoding_restaurant_app/shared/models/restaurant.dart';
-import 'package:dicoding_restaurant_app/features/home/providers/restaurant_list/restaurant_list_provider.dart';
-import 'package:dicoding_restaurant_app/features/home/widgets/home_loading_view.dart';
-import 'package:dicoding_restaurant_app/features/home/widgets/home_error_view.dart';
-import 'package:dicoding_restaurant_app/features/home/widgets/home_success_view.dart';
+import 'package:dicoding_restaurant_app/feature/home/providers/restaurant_list/restaurant_list_provider.dart';
+import 'package:dicoding_restaurant_app/feature/home/widgets/home_loading_view.dart';
+import 'package:dicoding_restaurant_app/feature/home/widgets/home_error_view.dart';
+import 'package:dicoding_restaurant_app/feature/home/widgets/home_success_view.dart';
 
 class RestaurantSearchDelegate extends SearchDelegate<String?> {
   Timer? _debounce;

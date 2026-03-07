@@ -4,14 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:dicoding_restaurant_app/core/base_result_state.dart';
 import 'package:dicoding_restaurant_app/shared/models/restaurant.dart';
-import 'package:dicoding_restaurant_app/features/home/providers/navigation_provider.dart';
-import 'package:dicoding_restaurant_app/features/home/providers/restaurant_list/restaurant_list_provider.dart';
-import 'package:dicoding_restaurant_app/features/home/widgets/home_loading_view.dart';
-import 'package:dicoding_restaurant_app/features/home/widgets/home_error_view.dart';
-import 'package:dicoding_restaurant_app/features/home/widgets/home_success_view.dart';
-import 'package:dicoding_restaurant_app/features/home/widgets/restaurant_search_delegate.dart';
-import 'package:dicoding_restaurant_app/features/setting/screens/setting_screen.dart';
-import 'package:dicoding_restaurant_app/features/favorite/screens/favorite_screen.dart';
+import 'package:dicoding_restaurant_app/feature/home/providers/navigation_provider.dart';
+import 'package:dicoding_restaurant_app/feature/home/providers/restaurant_list/restaurant_list_provider.dart';
+import 'package:dicoding_restaurant_app/feature/home/widgets/home_loading_view.dart';
+import 'package:dicoding_restaurant_app/feature/home/widgets/home_error_view.dart';
+import 'package:dicoding_restaurant_app/feature/home/widgets/home_success_view.dart';
+import 'package:dicoding_restaurant_app/feature/home/widgets/restaurant_search_delegate.dart';
+import 'package:dicoding_restaurant_app/feature/setting/screens/setting_screen.dart';
+import 'package:dicoding_restaurant_app/feature/favorite/screens/favorite_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   static const String routeName = '/';

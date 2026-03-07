@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:dicoding_restaurant_app/shared/models/restaurant.dart';
-import 'package:dicoding_restaurant_app/features/home/widgets/detail_hero_image.dart';
-import 'package:dicoding_restaurant_app/features/home/widgets/detail_info.dart';
-import 'package:dicoding_restaurant_app/features/home/widgets/detail_menu_section.dart';
+import 'package:dicoding_restaurant_app/feature/home/widgets/detail_hero_image.dart';
+import 'package:dicoding_restaurant_app/feature/home/widgets/detail_info.dart';
+import 'package:dicoding_restaurant_app/feature/home/widgets/detail_menu_section.dart';
 
 class DetailSuccessView extends StatelessWidget {
   final Restaurant restaurant;

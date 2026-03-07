@@ -3,9 +3,9 @@ import 'package:provider/provider.dart';
 import 'package:dicoding_restaurant_app/core/base_result_state.dart';
 import 'package:dicoding_restaurant_app/shared/models/restaurant.dart';
 import 'package:dicoding_restaurant_app/shared/providers/sqlite_database_provider.dart';
-import 'package:dicoding_restaurant_app/features/favorite/widgets/favorite_empty_view.dart';
-import 'package:dicoding_restaurant_app/features/favorite/widgets/favorite_error_view.dart';
-import 'package:dicoding_restaurant_app/features/favorite/widgets/favorite_success_view.dart';
+import 'package:dicoding_restaurant_app/feature/favorite/widgets/favorite_empty_view.dart';
+import 'package:dicoding_restaurant_app/feature/favorite/widgets/favorite_error_view.dart';
+import 'package:dicoding_restaurant_app/feature/favorite/widgets/favorite_success_view.dart';
 
 class FavoriteScreen extends StatefulWidget {
   const FavoriteScreen({super.key});

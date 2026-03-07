@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:dicoding_restaurant_app/shared/models/restaurant.dart';
-import 'package:dicoding_restaurant_app/features/home/widgets/restaurant_card.dart';
+import 'package:dicoding_restaurant_app/feature/home/widgets/restaurant_card.dart';
 
 class FavoriteSuccessView extends StatelessWidget {
   final List<Restaurant> restaurants;
