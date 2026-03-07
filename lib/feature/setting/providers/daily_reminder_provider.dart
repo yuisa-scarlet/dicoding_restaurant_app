@@ -26,28 +26,28 @@ class DailyReminderProvider extends ChangeNotifier {
 
     if (value) {
       final permResult = await _notificationService.requestPermissions();
-      debugPrint('📋 Permission result: $permResult');
+      debugPrint('Permission result: $permResult');
 
       // Register WorkManager for background API fetch + notification
       await _workmanagerService.registerDailyReminder();
-      debugPrint('✅ WorkManager periodic task registered');
+      debugPrint('WorkManager periodic task registered');
 
       // Debug: list pending notifications
       final pending = await _notificationService.pendingNotificationRequests();
-      debugPrint('📌 Pending notifications: ${pending.length}');
+      debugPrint('Pending notifications: ${pending.length}');
       for (final p in pending) {
         debugPrint('   - id: ${p.id}, title: ${p.title}, body: ${p.body}');
       }
     } else {
       await _workmanagerService.cancelDailyReminder();
       await _notificationService.cancelNotification(0);
-      debugPrint('❌ Daily reminder cancelled');
+      debugPrint('Daily reminder cancelled');
 
       final pending = await _notificationService.pendingNotificationRequests();
-      debugPrint('📌 Pending notifications after cancel: ${pending.length}');
+      debugPrint('Pending notifications after cancel: ${pending.length}');
     }
 
     await _preferenceService.saveDailyReminder(value);
-    debugPrint('💾 Saved daily reminder preference: $value');
+    debugPrint('Saved daily reminder preference: $value');
   }
 }

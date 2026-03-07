@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:dicoding_restaurant_app/core/config.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:http/http.dart' as http;
 import 'package:workmanager/workmanager.dart';
@@ -12,20 +13,20 @@ const String dailyReminderUniqueId = 'daily_restaurant_reminder_id';
 @pragma('vm:entry-point')
 void callbackDispatcher() {
   Workmanager().executeTask((task, inputData) async {
-    print('🔔 WorkManager task fired: $task');
+    debugPrint('WorkManager task fired: $task');
     if (task == dailyReminderTaskName) {
       try {
         final response = await http.get(
           Uri.parse('${Config.baseUrl}/list'),
         );
 
-        print('📡 API response status: ${response.statusCode}');
+        debugPrint('API response status: ${response.statusCode}');
 
         if (response.statusCode == 200) {
           final result = jsonDecode(response.body);
           final restaurants = result['restaurants'] as List;
 
-          print('🍽️ Restaurants count: ${restaurants.length}');
+          debugPrint('Restaurants count: ${restaurants.length}');
 
           if (restaurants.isNotEmpty) {
             final random = Random();
@@ -36,7 +37,7 @@ void callbackDispatcher() {
             final rating = restaurant['rating']?.toString() ?? '';
             final id = restaurant['id'] ?? '';
 
-            print('📌 Selected restaurant: $name - $city');
+            debugPrint('Selected restaurant: $name - $city');
 
             final flutterLocalNotificationsPlugin =
                 FlutterLocalNotificationsPlugin();
@@ -67,11 +68,11 @@ void callbackDispatcher() {
               notificationDetails,
               payload: id,
             );
-            print('✅ Notification shown successfully');
+            debugPrint('Notification shown successfully');
           }
         }
       } catch (e) {
-        print('❌ WorkManager task error: $e');
+        debugPrint('WorkManager task error: $e');
         return Future.value(false);
       }
     }
