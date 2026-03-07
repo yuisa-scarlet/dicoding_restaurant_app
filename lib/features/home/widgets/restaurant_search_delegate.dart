@@ -12,7 +12,7 @@ class RestaurantSearchDelegate extends SearchDelegate<String?> {
   Timer? _debounce;
 
   @override
-  String get searchFieldLabel => 'Cari restoran...';
+  String get searchFieldLabel => 'Search restaurants...';
 
   @override
   TextStyle? get searchFieldStyle => const TextStyle(fontSize: 14);

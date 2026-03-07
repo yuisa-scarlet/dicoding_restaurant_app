@@ -24,7 +24,7 @@ class SqliteDatabaseProvider extends ChangeNotifier {
       final favorites = await _service.getFavorites();
       _state = BaseResultStateSuccess(favorites);
     } catch (e) {
-      _state = BaseResultStateError('Gagal memuat favorit: $e');
+      _state = BaseResultStateError('Failed to load favorites: $e');
     }
     notifyListeners();
   }
@@ -51,7 +51,7 @@ class SqliteDatabaseProvider extends ChangeNotifier {
       await checkIsFavorite(restaurant.id);
       await _loadFavorites();
     } catch (e) {
-      debugPrint('Gagal menambahkan ke favorit: $e');
+      debugPrint('Failed to toggle favorite: $e');
     }
   }
 }

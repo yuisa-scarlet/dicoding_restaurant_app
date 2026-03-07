@@ -13,7 +13,7 @@ class FavoriteEmptyView extends StatelessWidget {
           Icon(LucideIcons.heart, size: 100, color: Colors.grey),
           SizedBox(height: 16),
           Text(
-            'Belum ada restoran favorit',
+            'No favorite restaurants yet',
             style: TextStyle(fontSize: 16, color: Colors.grey),
           ),
         ],

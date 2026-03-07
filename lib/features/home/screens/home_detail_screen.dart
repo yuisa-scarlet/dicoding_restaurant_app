@@ -84,8 +84,8 @@ class _HomeDetailScreenState extends State<HomeDetailScreen> {
                       SnackBar(
                         content: Text(
                           willRemove
-                              ? '${restaurant.name} dihapus dari favorit'
-                              : '${restaurant.name} ditambahkan ke favorit',
+                              ? '${restaurant.name} removed from favorites'
+                              : '${restaurant.name} added to favorites',
                         ),
                       ),
                     );

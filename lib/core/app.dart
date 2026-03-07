@@ -88,8 +88,10 @@ class App extends StatelessWidget {
         Provider<SqliteDatabaseService>(create: (_) => SqliteDatabaseService()),
         ChangeNotifierProvider<SqliteDatabaseProvider>(
           create: (context) {
-            return SqliteDatabaseProvider(context.read<SqliteDatabaseService>());
-          }
+            return SqliteDatabaseProvider(
+              context.read<SqliteDatabaseService>(),
+            );
+          },
         ),
         Provider<ApiClient>(create: (_) => ApiClient(baseUrl: Config.baseUrl)),
         ChangeNotifierProvider<RestaurantListProvider>(
@@ -99,7 +101,9 @@ class App extends StatelessWidget {
         ),
         ChangeNotifierProvider<RestaurantDetailProvider>(
           create: (context) {
-            return RestaurantDetailProvider(apiClient: context.read<ApiClient>());
+            return RestaurantDetailProvider(
+              apiClient: context.read<ApiClient>(),
+            );
           },
         ),
         ChangeNotifierProvider<ThemeProvider>(

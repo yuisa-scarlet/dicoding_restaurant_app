@@ -30,11 +30,11 @@ class RestaurantDetailProvider extends ChangeNotifier {
       _state = BaseResultStateSuccess(restaurant);
     } on SocketException {
       _state = BaseResultStateError(
-        'Tidak dapat terhubung ke server. Periksa koneksi internet Anda.',
+        'Unable to connect to the server. Please check your internet connection.',
       );
     } catch (e) {
       _state = BaseResultStateError(
-        'Terjadi kesalahan saat memuat detail restoran. Silakan coba lagi.',
+        'An error occurred while loading restaurant details. Please try again.',
       );
     }
 
@@ -53,15 +53,13 @@ class RestaurantDetailProvider extends ChangeNotifier {
     );
 
     if (response.statusCode != 200 && response.statusCode != 201) {
-      throw Exception(
-        'Gagal mengirim ulasan. Silakan coba beberapa saat lagi.',
-      );
+      throw Exception('Failed to submit review. Please try again later.');
     }
 
     final result = jsonDecode(response.body);
     if (result['error'] == true) {
       throw Exception(
-        result['message'] ?? 'Gagal mengirim ulasan. Silakan coba lagi.',
+        result['message'] ?? 'Failed to submit review. Please try again.',
       );
     }
 

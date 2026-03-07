@@ -43,17 +43,17 @@ class RestaurantListProvider extends ChangeNotifier {
       );
 
       if (restaurants.isEmpty) {
-        _state = BaseResultStateError('Restoran tidak ditemukan.');
+        _state = BaseResultStateError('No restaurants found.');
       } else {
         _state = BaseResultStateSuccess(restaurants);
       }
     } on SocketException {
       _state = BaseResultStateError(
-        'Tidak dapat terhubung ke server. Periksa koneksi internet Anda.',
+        'Unable to connect to the server. Please check your internet connection.',
       );
     } catch (e) {
       _state = BaseResultStateError(
-        'Terjadi kesalahan saat memuat data restoran. Silakan coba lagi.',
+        'An error occurred while loading restaurant data. Please try again.',
       );
     }
 

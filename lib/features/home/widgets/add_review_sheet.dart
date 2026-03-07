@@ -78,7 +78,7 @@ class _AddReviewSheetContentState extends State<_AddReviewSheetContent> {
       filled: true,
       fillColor: Theme.of(
         context,
-      ).colorScheme.surfaceContainerHighest.withOpacity(0.4),
+      ).colorScheme.surfaceContainerHighest.withValues(alpha: 0.4),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
         borderSide: BorderSide.none,

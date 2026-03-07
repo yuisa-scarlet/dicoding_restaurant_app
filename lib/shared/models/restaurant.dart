@@ -94,7 +94,7 @@ class Restaurant {
         customerReviews!.map((review) => review.toJson()),
       ),
   };
-  
+
   factory Restaurant.fromMap(Map<String, dynamic> map) {
     return Restaurant(
       id: map['id'],
