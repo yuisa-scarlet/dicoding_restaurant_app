@@ -1,0 +1,103 @@
+import 'dart:convert';
+import 'dart:math';
+
+import 'package:dicoding_restaurant_app/core/config.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:http/http.dart' as http;
+import 'package:workmanager/workmanager.dart';
+
+const String dailyReminderTaskName = 'daily_restaurant_reminder';
+const String dailyReminderUniqueId = 'daily_restaurant_reminder_id';
+
+@pragma('vm:entry-point')
+void callbackDispatcher() {
+  Workmanager().executeTask((task, inputData) async {
+    print('🔔 WorkManager task fired: $task');
+    if (task == dailyReminderTaskName) {
+      try {
+        final response = await http.get(
+          Uri.parse('${Config.baseUrl}/list'),
+        );
+
+        print('📡 API response status: ${response.statusCode}');
+
+        if (response.statusCode == 200) {
+          final result = jsonDecode(response.body);
+          final restaurants = result['restaurants'] as List;
+
+          print('🍽️ Restaurants count: ${restaurants.length}');
+
+          if (restaurants.isNotEmpty) {
+            final random = Random();
+            final restaurant = restaurants[random.nextInt(restaurants.length)];
+
+            final name = restaurant['name'] ?? 'Restaurant';
+            final city = restaurant['city'] ?? '';
+            final rating = restaurant['rating']?.toString() ?? '';
+            final id = restaurant['id'] ?? '';
+
+            print('📌 Selected restaurant: $name - $city');
+
+            final flutterLocalNotificationsPlugin =
+                FlutterLocalNotificationsPlugin();
+
+            const initializationSettingsAndroid =
+                AndroidInitializationSettings('@mipmap/ic_launcher');
+            const initializationSettings = InitializationSettings(
+              android: initializationSettingsAndroid,
+            );
+            await flutterLocalNotificationsPlugin.initialize(
+              initializationSettings,
+            );
+
+            const androidDetails = AndroidNotificationDetails(
+              'daily_reminder_channel',
+              'Daily Reminder',
+              importance: Importance.max,
+              priority: Priority.high,
+            );
+            const notificationDetails = NotificationDetails(
+              android: androidDetails,
+            );
+
+            await flutterLocalNotificationsPlugin.show(
+              Random().nextInt(10000),
+              'Rekomendasi Restoran Hari Ini 🍽️',
+              '$name - $city ⭐ $rating',
+              notificationDetails,
+              payload: id,
+            );
+            print('✅ Notification shown successfully');
+          }
+        }
+      } catch (e) {
+        print('❌ WorkManager task error: $e');
+        return Future.value(false);
+      }
+    }
+    return Future.value(true);
+  });
+}
+
+class WorkmanagerService {
+  Future<void> init() async {
+    await Workmanager().initialize(callbackDispatcher);
+  }
+
+  Future<void> registerDailyReminder() async {
+    await Workmanager().registerPeriodicTask(
+      dailyReminderUniqueId,
+      dailyReminderTaskName,
+      frequency: const Duration(hours: 24),
+      initialDelay: const Duration(seconds: 5),
+      constraints: Constraints(
+        networkType: NetworkType.connected,
+      ),
+      existingWorkPolicy: ExistingPeriodicWorkPolicy.replace,
+    );
+  }
+
+  Future<void> cancelDailyReminder() async {
+    await Workmanager().cancelByUniqueName(dailyReminderUniqueId);
+  }
+}
