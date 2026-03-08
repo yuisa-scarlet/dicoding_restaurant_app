@@ -39,13 +39,8 @@ class LocalNotificationService {
   Future<void> configureLocalTimeZone() async {
     tz.initializeTimeZones();
 
-    final timezoneInfo = await FlutterTimezone.getLocalTimezone();
-
-    try {
-      tz.setLocalLocation(tz.getLocation(timezoneInfo.identifier));
-    } catch (e) {
-      tz.setLocalLocation(tz.getLocation('Asia/Jakarta'));
-    }
+    await FlutterTimezone.getLocalTimezone();
+    tz.setLocalLocation(tz.getLocation('Asia/Jakarta'));
   }
 
   Future<bool> _isAndroidPermissionGranted() async {
@@ -131,7 +126,7 @@ class LocalNotificationService {
   tz.TZDateTime _nextInstanceOfElevenAM() {
     final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
     tz.TZDateTime scheduledDate =
-        tz.TZDateTime(tz.local, now.year, now.month, now.day, 11, 0);
+        tz.TZDateTime(tz.local, now.year, now.month, now.day, 11, 50);
     if (scheduledDate.isBefore(now)) {
       scheduledDate = scheduledDate.add(const Duration(days: 1));
     }

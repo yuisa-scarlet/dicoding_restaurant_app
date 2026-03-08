@@ -74,7 +74,11 @@ class _HomeDetailScreenState extends State<HomeDetailScreen> {
                 return IconButton(
                   icon: Icon(
                     isFavorite ? Icons.favorite : Icons.favorite_border,
-                    color: isFavorite ? Colors.white : iconColor,
+                    color: isFavorite
+                        ? (Theme.of(context).brightness == Brightness.dark
+                            ? Colors.white
+                            : Colors.red)
+                        : iconColor,
                   ),
                   onPressed: () async {
                     final willRemove = isFavorite;

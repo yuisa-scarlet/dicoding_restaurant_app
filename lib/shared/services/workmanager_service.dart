@@ -10,6 +10,28 @@ import 'package:workmanager/workmanager.dart';
 const String dailyReminderTaskName = 'daily_restaurant_reminder';
 const String dailyReminderUniqueId = 'daily_restaurant_reminder_id';
 
+Duration _calculateDelayUntilElevenAM() {
+  final now = DateTime.now();
+  var scheduledTime = DateTime(now.year, now.month, now.day, 11, 50);
+  if (scheduledTime.isBefore(now)) {
+    scheduledTime = scheduledTime.add(const Duration(days: 1));
+  }
+  return scheduledTime.difference(now);
+}
+
+Future<void> _registerNextDailyReminder() async {
+  final delay = _calculateDelayUntilElevenAM();
+  await Workmanager().registerOneOffTask(
+    dailyReminderUniqueId,
+    dailyReminderTaskName,
+    initialDelay: delay,
+    constraints: Constraints(
+      networkType: NetworkType.connected,
+    ),
+    existingWorkPolicy: ExistingWorkPolicy.replace,
+  );
+}
+
 @pragma('vm:entry-point')
 void callbackDispatcher() {
   Workmanager().executeTask((task, inputData) async {
@@ -71,8 +93,14 @@ void callbackDispatcher() {
             debugPrint('Notification shown successfully');
           }
         }
+
+        // Re-register for next day at 11:00 AM
+        await _registerNextDailyReminder();
+        debugPrint('Re-registered for next day');
       } catch (e) {
         debugPrint('WorkManager task error: $e');
+        // Still re-register even on error
+        await _registerNextDailyReminder();
         return Future.value(false);
       }
     }
@@ -86,16 +114,12 @@ class WorkmanagerService {
   }
 
   Future<void> registerDailyReminder() async {
-    await Workmanager().registerPeriodicTask(
-      dailyReminderUniqueId,
-      dailyReminderTaskName,
-      frequency: const Duration(hours: 24),
-      initialDelay: const Duration(seconds: 5),
-      constraints: Constraints(
-        networkType: NetworkType.connected,
-      ),
-      existingWorkPolicy: ExistingPeriodicWorkPolicy.replace,
-    );
+    final delay = _calculateDelayUntilElevenAM();
+
+    debugPrint('⏰ Now: ${DateTime.now()}');
+    debugPrint('⏰ Initial delay: ${delay.inHours}h ${delay.inMinutes % 60}m ${delay.inSeconds % 60}s');
+
+    await _registerNextDailyReminder();
   }
 
   Future<void> cancelDailyReminder() async {
