@@ -76,8 +76,8 @@ class _HomeDetailScreenState extends State<HomeDetailScreen> {
                     isFavorite ? Icons.favorite : Icons.favorite_border,
                     color: isFavorite
                         ? (Theme.of(context).brightness == Brightness.dark
-                            ? Colors.white
-                            : Colors.red)
+                              ? Colors.white
+                              : Colors.red)
                         : iconColor,
                   ),
                   onPressed: () async {

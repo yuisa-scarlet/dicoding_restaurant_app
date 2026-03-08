@@ -25,9 +25,7 @@ Future<void> _registerNextDailyReminder() async {
     dailyReminderUniqueId,
     dailyReminderTaskName,
     initialDelay: delay,
-    constraints: Constraints(
-      networkType: NetworkType.connected,
-    ),
+    constraints: Constraints(networkType: NetworkType.connected),
     existingWorkPolicy: ExistingWorkPolicy.replace,
   );
 }
@@ -38,9 +36,7 @@ void callbackDispatcher() {
     debugPrint('WorkManager task fired: $task');
     if (task == dailyReminderTaskName) {
       try {
-        final response = await http.get(
-          Uri.parse('${Config.baseUrl}/list'),
-        );
+        final response = await http.get(Uri.parse('${Config.baseUrl}/list'));
 
         debugPrint('API response status: ${response.statusCode}');
 
@@ -64,8 +60,9 @@ void callbackDispatcher() {
             final flutterLocalNotificationsPlugin =
                 FlutterLocalNotificationsPlugin();
 
-            const initializationSettingsAndroid =
-                AndroidInitializationSettings('@mipmap/ic_launcher');
+            const initializationSettingsAndroid = AndroidInitializationSettings(
+              '@mipmap/ic_launcher',
+            );
             const initializationSettings = InitializationSettings(
               android: initializationSettingsAndroid,
             );
@@ -117,7 +114,9 @@ class WorkmanagerService {
     final delay = _calculateDelayUntilElevenAM();
 
     debugPrint('⏰ Now: ${DateTime.now()}');
-    debugPrint('⏰ Initial delay: ${delay.inHours}h ${delay.inMinutes % 60}m ${delay.inSeconds % 60}s');
+    debugPrint(
+      '⏰ Initial delay: ${delay.inHours}h ${delay.inMinutes % 60}m ${delay.inSeconds % 60}s',
+    );
 
     await _registerNextDailyReminder();
   }

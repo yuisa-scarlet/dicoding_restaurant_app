@@ -51,19 +51,22 @@ void main() {
   ''';
 
   group('RestaurantListProvider', () {
-    test('initial state should be loading (constructor auto-fetches)', () async {
-      when(() => mockApiClient.get('/list')).thenAnswer(
-        (_) async => http.Response(successResponseBody, 200),
-      );
+    test(
+      'initial state should be loading (constructor auto-fetches)',
+      () async {
+        when(
+          () => mockApiClient.get('/list'),
+        ).thenAnswer((_) async => http.Response(successResponseBody, 200));
 
-      final provider = RestaurantListProvider(apiClient: mockApiClient);
-      expect(provider.state, isA<BaseResultStateLoading>());
-    });
+        final provider = RestaurantListProvider(apiClient: mockApiClient);
+        expect(provider.state, isA<BaseResultStateLoading>());
+      },
+    );
 
     test('should return list of restaurants when API call succeeds', () async {
-      when(() => mockApiClient.get('/list')).thenAnswer(
-        (_) async => http.Response(successResponseBody, 200),
-      );
+      when(
+        () => mockApiClient.get('/list'),
+      ).thenAnswer((_) async => http.Response(successResponseBody, 200));
 
       final provider = RestaurantListProvider(apiClient: mockApiClient);
       await Future.delayed(Duration.zero);
@@ -77,26 +80,29 @@ void main() {
       expect(successState.data[1].name, 'Kafe Kita');
     });
 
-    test('should return error when API call fails with non-200 status', () async {
-      when(() => mockApiClient.get('/list')).thenAnswer(
-        (_) async => http.Response('Server Error', 500),
-      );
+    test(
+      'should return error when API call fails with non-200 status',
+      () async {
+        when(
+          () => mockApiClient.get('/list'),
+        ).thenAnswer((_) async => http.Response('Server Error', 500));
 
-      final provider = RestaurantListProvider(apiClient: mockApiClient);
+        final provider = RestaurantListProvider(apiClient: mockApiClient);
 
-      await Future.delayed(Duration.zero);
+        await Future.delayed(Duration.zero);
 
-      expect(provider.state, isA<BaseResultStateError<List<Restaurant>>>());
+        expect(provider.state, isA<BaseResultStateError<List<Restaurant>>>());
 
-      final errorState =
-          provider.state as BaseResultStateError<List<Restaurant>>;
-      expect(errorState.errorMessage, contains('error'));
-    });
+        final errorState =
+            provider.state as BaseResultStateError<List<Restaurant>>;
+        expect(errorState.errorMessage, contains('error'));
+      },
+    );
 
     test('should return error when restaurant list is empty', () async {
-      when(() => mockApiClient.get('/list')).thenAnswer(
-        (_) async => http.Response(emptyResponseBody, 200),
-      );
+      when(
+        () => mockApiClient.get('/list'),
+      ).thenAnswer((_) async => http.Response(emptyResponseBody, 200));
 
       final provider = RestaurantListProvider(apiClient: mockApiClient);
 

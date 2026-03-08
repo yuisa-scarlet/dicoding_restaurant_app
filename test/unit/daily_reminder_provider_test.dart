@@ -50,54 +50,64 @@ void main() {
       expect(provider.isDailyReminderEnabled, true);
     });
 
-    test('toggleDailyReminder(true) should enable reminder and register workmanager', () async {
-      when(() => mockPrefs.getDailyReminder()).thenReturn(false);
-      when(() => mockNotification.requestPermissions())
-          .thenAnswer((_) async => true);
-      when(() => mockWorkmanager.registerDailyReminder())
-          .thenAnswer((_) async {});
-      when(() => mockNotification.pendingNotificationRequests())
-          .thenAnswer((_) async => <PendingNotificationRequest>[]);
-      when(() => mockPrefs.saveDailyReminder(true))
-          .thenAnswer((_) async {});
+    test(
+      'toggleDailyReminder(true) should enable reminder and register workmanager',
+      () async {
+        when(() => mockPrefs.getDailyReminder()).thenReturn(false);
+        when(
+          () => mockNotification.requestPermissions(),
+        ).thenAnswer((_) async => true);
+        when(
+          () => mockWorkmanager.registerDailyReminder(),
+        ).thenAnswer((_) async {});
+        when(
+          () => mockNotification.pendingNotificationRequests(),
+        ).thenAnswer((_) async => <PendingNotificationRequest>[]);
+        when(() => mockPrefs.saveDailyReminder(true)).thenAnswer((_) async {});
 
-      final provider = DailyReminderProvider(
-        mockPrefs,
-        mockNotification,
-        mockWorkmanager,
-      );
+        final provider = DailyReminderProvider(
+          mockPrefs,
+          mockNotification,
+          mockWorkmanager,
+        );
 
-      await provider.toggleDailyReminder(true);
+        await provider.toggleDailyReminder(true);
 
-      expect(provider.isDailyReminderEnabled, true);
-      verify(() => mockNotification.requestPermissions()).called(1);
-      verify(() => mockWorkmanager.registerDailyReminder()).called(1);
-      verify(() => mockPrefs.saveDailyReminder(true)).called(1);
-    });
+        expect(provider.isDailyReminderEnabled, true);
+        verify(() => mockNotification.requestPermissions()).called(1);
+        verify(() => mockWorkmanager.registerDailyReminder()).called(1);
+        verify(() => mockPrefs.saveDailyReminder(true)).called(1);
+      },
+    );
 
-    test('toggleDailyReminder(false) should disable reminder and cancel workmanager', () async {
-      when(() => mockPrefs.getDailyReminder()).thenReturn(true);
-      when(() => mockWorkmanager.cancelDailyReminder())
-          .thenAnswer((_) async {});
-      when(() => mockNotification.cancelNotification(0))
-          .thenAnswer((_) async {});
-      when(() => mockNotification.pendingNotificationRequests())
-          .thenAnswer((_) async => <PendingNotificationRequest>[]);
-      when(() => mockPrefs.saveDailyReminder(false))
-          .thenAnswer((_) async {});
+    test(
+      'toggleDailyReminder(false) should disable reminder and cancel workmanager',
+      () async {
+        when(() => mockPrefs.getDailyReminder()).thenReturn(true);
+        when(
+          () => mockWorkmanager.cancelDailyReminder(),
+        ).thenAnswer((_) async {});
+        when(
+          () => mockNotification.cancelNotification(0),
+        ).thenAnswer((_) async {});
+        when(
+          () => mockNotification.pendingNotificationRequests(),
+        ).thenAnswer((_) async => <PendingNotificationRequest>[]);
+        when(() => mockPrefs.saveDailyReminder(false)).thenAnswer((_) async {});
 
-      final provider = DailyReminderProvider(
-        mockPrefs,
-        mockNotification,
-        mockWorkmanager,
-      );
+        final provider = DailyReminderProvider(
+          mockPrefs,
+          mockNotification,
+          mockWorkmanager,
+        );
 
-      await provider.toggleDailyReminder(false);
+        await provider.toggleDailyReminder(false);
 
-      expect(provider.isDailyReminderEnabled, false);
-      verify(() => mockWorkmanager.cancelDailyReminder()).called(1);
-      verify(() => mockNotification.cancelNotification(0)).called(1);
-      verify(() => mockPrefs.saveDailyReminder(false)).called(1);
-    });
+        expect(provider.isDailyReminderEnabled, false);
+        verify(() => mockWorkmanager.cancelDailyReminder()).called(1);
+        verify(() => mockNotification.cancelNotification(0)).called(1);
+        verify(() => mockPrefs.saveDailyReminder(false)).called(1);
+      },
+    );
   });
 }

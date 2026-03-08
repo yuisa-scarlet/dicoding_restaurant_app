@@ -25,9 +25,7 @@ void main() async {
         Provider<LocalNotificationService>.value(
           value: localNotificationService,
         ),
-        Provider<WorkmanagerService>.value(
-          value: workmanagerService,
-        ),
+        Provider<WorkmanagerService>.value(value: workmanagerService),
       ],
       child: const App(),
     ),

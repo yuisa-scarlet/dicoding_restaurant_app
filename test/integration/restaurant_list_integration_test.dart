@@ -16,9 +16,10 @@ void main() {
   });
 
   group('Restaurant List Integration Test', () {
-    test('full flow: fetch API → parse JSON → Restaurant model → provider state',
-        () async {
-      const realApiResponse = '''
+    test(
+      'full flow: fetch API → parse JSON → Restaurant model → provider state',
+      () async {
+        const realApiResponse = '''
       {
         "error": false,
         "message": "success",
@@ -52,35 +53,36 @@ void main() {
       }
       ''';
 
-      when(() => mockApiClient.get('/list')).thenAnswer(
-        (_) async => http.Response(realApiResponse, 200),
-      );
+        when(
+          () => mockApiClient.get('/list'),
+        ).thenAnswer((_) async => http.Response(realApiResponse, 200));
 
-      final provider = RestaurantListProvider(apiClient: mockApiClient);
+        final provider = RestaurantListProvider(apiClient: mockApiClient);
 
-      await Future.delayed(Duration.zero);
+        await Future.delayed(Duration.zero);
 
-      expect(provider.state, isA<BaseResultStateSuccess<List<Restaurant>>>());
+        expect(provider.state, isA<BaseResultStateSuccess<List<Restaurant>>>());
 
-      final state =
-          provider.state as BaseResultStateSuccess<List<Restaurant>>;
-      final restaurants = state.data;
+        final state =
+            provider.state as BaseResultStateSuccess<List<Restaurant>>;
+        final restaurants = state.data;
 
-      expect(restaurants.length, 3);
+        expect(restaurants.length, 3);
 
-      expect(restaurants[0].id, 'rqdv5juczeskfw1e867');
-      expect(restaurants[0].name, 'Melting Pot');
-      expect(restaurants[0].city, 'Medan');
-      expect(restaurants[0].rating, 4.2);
+        expect(restaurants[0].id, 'rqdv5juczeskfw1e867');
+        expect(restaurants[0].name, 'Melting Pot');
+        expect(restaurants[0].city, 'Medan');
+        expect(restaurants[0].rating, 4.2);
 
-      expect(restaurants[1].id, 's1knt6za9kkfw1e867');
-      expect(restaurants[1].name, 'Kafe Kita');
-      expect(restaurants[1].city, 'Gorontalo');
+        expect(restaurants[1].id, 's1knt6za9kkfw1e867');
+        expect(restaurants[1].name, 'Kafe Kita');
+        expect(restaurants[1].city, 'Gorontalo');
 
-      expect(restaurants[2].name, 'Bring Your Phone Cafe');
-      expect(restaurants[2].city, 'Surabaya');
+        expect(restaurants[2].name, 'Bring Your Phone Cafe');
+        expect(restaurants[2].city, 'Surabaya');
 
-      verify(() => mockApiClient.get('/list')).called(1);
-    });
+        verify(() => mockApiClient.get('/list')).called(1);
+      },
+    );
   });
 }

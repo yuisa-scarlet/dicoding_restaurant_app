@@ -46,15 +46,14 @@ void main() {
           ),
         ),
       ],
-      child: const MaterialApp(
-        home: SettingScreen(),
-      ),
+      child: const MaterialApp(home: SettingScreen()),
     );
   }
 
   group('SettingScreen Widget Tests', () {
-    testWidgets('should display Dark Mode and Daily Reminder toggles',
-        (tester) async {
+    testWidgets('should display Dark Mode and Daily Reminder toggles', (
+      tester,
+    ) async {
       await tester.pumpWidget(createSettingScreen());
       await tester.pumpAndSettle();
 
@@ -64,30 +63,34 @@ void main() {
       expect(find.text('NOTIFICATIONS'), findsOneWidget);
     });
 
-    testWidgets('Daily Reminder toggle should call toggleDailyReminder when tapped',
-        (tester) async {
-      when(() => mockNotification.requestPermissions())
-          .thenAnswer((_) async => true);
-      when(() => mockWorkmanager.registerDailyReminder())
-          .thenAnswer((_) async {});
-      when(() => mockNotification.pendingNotificationRequests())
-          .thenAnswer((_) async => <PendingNotificationRequest>[]);
-      when(() => mockPrefs.saveDailyReminder(true))
-          .thenAnswer((_) async {});
+    testWidgets(
+      'Daily Reminder toggle should call toggleDailyReminder when tapped',
+      (tester) async {
+        when(
+          () => mockNotification.requestPermissions(),
+        ).thenAnswer((_) async => true);
+        when(
+          () => mockWorkmanager.registerDailyReminder(),
+        ).thenAnswer((_) async {});
+        when(
+          () => mockNotification.pendingNotificationRequests(),
+        ).thenAnswer((_) async => <PendingNotificationRequest>[]);
+        when(() => mockPrefs.saveDailyReminder(true)).thenAnswer((_) async {});
 
-      await tester.pumpWidget(createSettingScreen());
-      await tester.pumpAndSettle();
+        await tester.pumpWidget(createSettingScreen());
+        await tester.pumpAndSettle();
 
-      final dailyReminderSwitch = find.widgetWithText(
-        SwitchListTile,
-        'Daily Reminder',
-      );
-      expect(dailyReminderSwitch, findsOneWidget);
+        final dailyReminderSwitch = find.widgetWithText(
+          SwitchListTile,
+          'Daily Reminder',
+        );
+        expect(dailyReminderSwitch, findsOneWidget);
 
-      await tester.tap(dailyReminderSwitch);
-      await tester.pumpAndSettle();
+        await tester.tap(dailyReminderSwitch);
+        await tester.pumpAndSettle();
 
-      verify(() => mockWorkmanager.registerDailyReminder()).called(1);
-    });
+        verify(() => mockWorkmanager.registerDailyReminder()).called(1);
+      },
+    );
   });
 }

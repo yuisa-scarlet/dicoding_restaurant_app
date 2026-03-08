@@ -81,16 +81,13 @@ class _SettingScreenState extends State<SettingScreen> {
           ),
           Consumer<DailyReminderProvider>(
             builder: (context, provider, _) {
-              final isDark =
-                  Theme.of(context).brightness == Brightness.dark;
+              final isDark = Theme.of(context).brightness == Brightness.dark;
               return Card(
                 elevation: 0,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                   side: BorderSide(
-                    color: isDark
-                        ? Colors.white12
-                        : const Color(0xFFE0E0E0),
+                    color: isDark ? Colors.white12 : const Color(0xFFE0E0E0),
                   ),
                 ),
                 child: SwitchListTile(
