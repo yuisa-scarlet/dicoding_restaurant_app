@@ -12,7 +12,7 @@ const String dailyReminderUniqueId = 'daily_restaurant_reminder_id';
 
 Duration _calculateDelayUntilElevenAM() {
   final now = DateTime.now();
-  var scheduledTime = DateTime(now.year, now.month, now.day, 11, 50);
+  var scheduledTime = DateTime(now.year, now.month, now.day, 11, 0);
   if (scheduledTime.isBefore(now)) {
     scheduledTime = scheduledTime.add(const Duration(days: 1));
   }
